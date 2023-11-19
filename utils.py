@@ -22,7 +22,7 @@ def write_json(data:Dict[Any, Any], file_path:str) -> None:
         json.dump(data, file, indent = 4, ensure_ascii = False)
 
 def clean_string(input_string)-> str:
-    return re.sub(r'[<>:"/\\|?*]', '-', input_string)
+    return re.sub(r'[<>:"/\\|?!¡¿º%&~]', '-', input_string)
 
 def move_folder(src: str, dst: str) -> None:
     check_path(dst)
