@@ -52,6 +52,7 @@ class Platzi:
         wait.until(EC.presence_of_element_located((By.XPATH, '//span[@data-qa="course_name"]')))
 
         self.course_name =  self.driver.find_element(By.XPATH, '//span[@data-qa="course_name"]').text
+        self.course_name = clean_string(self.course_name)
 
         sections = self.driver.find_elements(By.XPATH, '//article')
 
