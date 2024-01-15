@@ -12,7 +12,7 @@ Descarga automática de los cursos de `Platzi` con un script creado en `Python` 
 ![GitHub stars](https://img.shields.io/github/stars/ivansaul/platzi-downloader)
 ![GitHub forks](https://img.shields.io/github/forks/ivansaul/platzi-downloader)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
-[![Discord](https://img.shields.io/badge/-Discord-424549?style=social&logo=discord)](https://discord.gg/b72uAVBz6b)
+[![Discord](https://img.shields.io/badge/-Discord-424549?style=social&logo=discord)](https://discord.gg/tDvybtJ7y9)
 
 </div>
 
