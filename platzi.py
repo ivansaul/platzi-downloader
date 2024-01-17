@@ -4,6 +4,7 @@ from time import sleep
 
 import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -35,10 +36,17 @@ class Platzi:
     
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.presence_of_element_located((By.XPATH, '//button[@type="submit"]')))
-        self.driver.find_element(By.XPATH, '//input[@name="email"]').send_keys(self.email)
-        self.driver.find_element(By.XPATH, '//input[@name="password"]').send_keys(self.password)
+        email = self.driver.find_element(By.XPATH, '//input[@name="email"]')
+        email.send_keys(self.email)
+        sleep(5)
+        email.send_keys(Keys.ENTER)
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.presence_of_element_located((By.XPATH, '//input[@name="password"]')))
+        password = self.driver.find_element(By.XPATH, '//input[@name="password"]')
+        password.send_keys(self.password)
+        sleep(5)
+        password.send_keys(Keys.ENTER)
         self.driver.find_element(By.XPATH, '//button[@type="submit"]').click()
-
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.presence_of_element_located((By.XPATH, '//nav[@class="MainMenu"]')))
 
