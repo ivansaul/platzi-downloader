@@ -83,14 +83,6 @@ Para cerrar sesión en Platzi y borrar tu sesión del almacenamiento local, usa 
 platzi logout
 ```
 
-### Descargar Curso
-
-1. Ejecuta el script `platzi.py` para obtener las url de los videos.
-
-```bash
-python platzi.py
-```
-
 ### Descargar un Curso
 
 Para descargar un curso de Platzi, usa el comando download seguido de la URL del curso que deseas descargar. La URL puede encontrarse en la barra de direcciones al visualizar la página del curso en Platzi.
