@@ -1,4 +1,0 @@
-click
-yt-dlp
-requests
-git+https://www.github.com/ultrafunkamsterdam/undetected-chromedriver@master 
