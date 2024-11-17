@@ -1,7 +1,9 @@
-import tempfile
 from pathlib import Path
 
-SESSION_DIR = Path(tempfile.gettempdir()) / ".platzi"
+import platformdirs
+
+APP_NAME = "Platzi"
+SESSION_DIR = Path(platformdirs.user_data_dir(APP_NAME))
 SESSION_FILE = SESSION_DIR / "state.json"
 
 LOGIN_URL = "https://platzi.com/login"
