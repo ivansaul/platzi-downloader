@@ -44,7 +44,7 @@ jobs:
         run: poetry install --with=dev
       
       - name: Install Playwright Browsers
-        run: poetry run playwright install
+        run: poetry run python -m playwright install --with-deps
 
       - name: Lint with Ruff
         run: poetry run ruff check --output-format=github .
