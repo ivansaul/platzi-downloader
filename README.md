@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD033 MD036 MD041 MD045 MD046 -->
+
 ![Repo Banner](https://i.imgur.com/I6zFXds.png)
 
 <div align="center">
@@ -6,116 +8,118 @@
     <b><a href="#">Platzi Downloader</a></b>
 </h1>
 
-Descarga automática de los cursos de `Platzi` con un script creado en `Python` utilizando `yt-dlp` como un subproceso.
+Es una herramienta de línea de comandos para descargar cursos directamente desde la terminal. Utiliza  ***`Python`*** y ***`Playwright`*** para automatizar el proceso de descarga y proporciona una interfaz de usuario amigable.
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/ivansaul/platzi-downloader)
 ![GitHub stars](https://img.shields.io/github/stars/ivansaul/platzi-downloader)
 ![GitHub forks](https://img.shields.io/github/forks/ivansaul/platzi-downloader)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Discord](https://img.shields.io/badge/-Discord-424549?style=social&logo=discord)](https://discord.gg/tDvybtJ7y9)
 
 </div>
 
 ---
 
-## Instalación
+## Instalación | Actualización
 
-El script utiliza **Selenium & Google Chrome (chrome driver)**, así que asegúrate de tener instalado y actualizado **Chrome browser** en tu ordenador.
+Para [`instalar` | `actualizar` ], ejecuta el siguiente comando en tu terminal:
 
-```bash
-git clone https://github.com/ivansaul/platzi-downloader.git
-cd platzi-downloader
-pip install -r requirements.txt
+```console
+pip install -U platzi
 ```
 
-### **Linux**
+Instala las dependencias de `playwright`:
 
-**En Ubuntu:**
-
-```bash
-sudo apt update -y
-# Install Google Chrome ...
-sudo apt install ffmpeg aria2 -y
-pip install -U yt-dlp
+```console
+playwright install chromium
 ```
 
-**En Archlinux:**
+> [!IMPORTANT]
+> El script utiliza ***`ffmpeg`***, como un subproceso, así que asegúrate de tener instalado y actualizado.
 
-```bash
-sudo pacman -Syu
-sudo pacman -S ffmpeg aria2 yt-dlp
-yay -S google-chrome
+<details>
+
+<summary>Tips & Tricks</summary>
+
+## FFmpeg Instalación
+
+### Ubuntu / Debian
+
+```console
+sudo apt install ffmpeg -y
 ```
 
-### **Windows**
+### Arch Linux
 
-> **Nota:** Asegurate de tener instalados [Python][python], [Google Chrome][chrome] , [yt-dlp][yt-dlp] y [ffmpeg][ffmpeg].
-
-```bash
-# Install Python ...
-# Install ffmpeg ...
-# Install Google Chrome ...
-pip install -U yt-dlp
+```console
+sudo pacman -S ffmpeg
 ```
 
-## Instrucciones
+### Windows [[Tutorial]][ffmpeg-youtube]
 
-1. Ejecuta el script `platzi.py` para obtener las url de los videos. 
+Puedes descargar la versión de `ffmpeg` para Windows desde [aquí][ffmpeg]. o algún gestor de paquetes como [`Scoop`][scoop] o [`Chocolatey`][chocolatey].
+
+```console
+scoop install ffmpeg
+```
+
+</details>
+
+## Guía de uso
+
+### Iniciar Sesión
+
+Para iniciar sesión en Platzi, usa el comando login. Esto abrirá una ventana de navegador para autenticarte e iniciar sesión en Platzi.
+
+```console
+platzi login
+```
+
+### Cerrar Sesión
+
+Para cerrar sesión en Platzi y borrar tu sesión del almacenamiento local, usa el comando `logout`.
+
+```console
+platzi logout
+```
+
+### Descargar Curso
+
+1. Ejecuta el script `platzi.py` para obtener las url de los videos.
 
 ```bash
 python platzi.py
 ```
 
-El script te pedirá tu correo y contraseña, así como la URL del curso a descargar (la URL puede ser de cualquier video del curso).
+### Descargar un Curso
 
-```bash
-Ingresa tus credenciales de Platzi
-Ingresa tu e-mail: tu@email.com
-Ingresa tu contraseña: tu_comtraseña
-Ingresa la URL del curso a descargar: https://platzi.com/clases/2292-terminal/37344-manipulando-archivos-y-directorios/
-.
-.
-.
+Para descargar un curso de Platzi, usa el comando download seguido de la URL del curso que deseas descargar. La URL puede encontrarse en la barra de direcciones al visualizar la página del curso en Platzi.
+
+```console
+platzi download <url-del-curso>
 ```
 
-2. Finalmente para descargar los vídeos ejecute.
+Ejemplo:
 
-```bash
-python downloader.py
+```console
+platzi download https://platzi.com/cursos/fastapi-2023/
 ```
 
-Por defecto, los vídeos se descargarán automáticamente en una carpeta con el mismo nombre del curso, con la mejor calidad existente (`best`) y usando `aria2` como gestor de descargas. Para personalizar la descarga, puedes usar las siguientes opciones.
+> [!IMPORTANT]
+> Asegúrate de estar logueado antes de intentar descargar los cursos.
 
-```bash
-Usage: python downloader.py [OPTIONS]
+<br>
 
-Options:
-  -d [yt-dlp|wget|aria2]      Select the external downloader (yt-dlp, or aria2). Default: aria2.
-  -q [360|480|720|1080|best]  Select the video quality (360, 480, 720, 1080 or best). Default: best
-  --help                      Show this message and exit.
+> [!TIP]
+> Si por algún motivo se cancela la descarga, vuelve a ejecutar `platzi download <url-del-curso>` para retomar la descarga.
 
-Examples: 
-  python downloader.py -q 1080
-  python downloader.py -d yt-dlp
-  python downloader.py -d yt-dlp -q 720
-  python downloader.py --help
-```
-
-> **Nota:** Si por algún motivo se cancela la descarga, vuelve a ejecutar `python downloader.py [OPTIONS]` para retomar la descarga.
-
-
-
-# **Aviso de Uso**
+## **Aviso de Uso**
 
 Este proyecto se realiza con fines exclusivamente educativos y de aprendizaje. El código proporcionado se ofrece "tal cual", sin ninguna garantía de su funcionamiento o idoneidad para ningún propósito específico.
 
 No me hago responsable por cualquier mal uso, daño o consecuencia que pueda surgir del uso de este proyecto. Es responsabilidad del usuario utilizarlo de manera adecuada y dentro de los límites legales y éticos.
 
-
-[python]: https://www.python.org/downloads/
 [ffmpeg]: https://ffmpeg.org
-[chrome]: https://www.google.com/chrome/
-[yt-dlp]: https://github.com/yt-dlp/yt-dlp/wiki/Installation
-[aria2]: https://github.com/aria2/aria2/releases/tag/release-1.36.0
-[demo]: https://youtu.be/GbQwB0hYvQU
-[ffmpeg-win]:https://youtu.be/0zN9oZ98ZgE
+[chocolatey]: https://community.chocolatey.org
+[scoop]: https://scoop.sh
+[ffmpeg-youtube]: https://youtu.be/JR36oH35Fgg?si=Gerco7SP8WlZVaKM
