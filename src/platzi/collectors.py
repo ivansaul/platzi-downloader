@@ -2,7 +2,7 @@ from playwright.async_api import BrowserContext, Page
 
 from .constants import PLATZI_URL
 from .models import TypeUnit, Unit, Video
-from .utils import get_m3u8_url, get_subtitles_url
+from .utils import get_m3u8_url, get_subtitles_url, slugify
 
 
 async def get_course_title(page: Page) -> str:
@@ -82,6 +82,7 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
             title=title,
             type=type,
             video=video,
+            slug=slugify(title),
         )
 
     except Exception:

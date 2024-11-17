@@ -41,6 +41,7 @@ class Unit(BaseModel):
     type: TypeUnit
     title: str
     url: str
+    slug: str
     video: Video | None = None
     resources: list[Resource] | None = None
 
