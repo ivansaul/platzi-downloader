@@ -1,5 +1,35 @@
 # CHANGELOG
 
+## v0.3.0 (2024-11-17)
+
+### Documentation
+
+* docs: removes outdated download instructions
+
+Removes the section detailing how to download courses using a script, as this method is no longer applicable. ([`8d3e854`](https://github.com/ivansaul/platzi-downloader/commit/8d3e854a5db8a41f131177bb8d7865e81ad33dc3))
+
+* docs: update README with updated installation and usage instructions. ([`0b9b500`](https://github.com/ivansaul/platzi-downloader/commit/0b9b500b7fa399c7ff7731e6b3ec0f6965d8523d))
+
+### Feature
+
+* feat: add subtitle download support
+
+Downloads subtitles in VTT format if available alongside the video. ([`436ffd7`](https://github.com/ivansaul/platzi-downloader/commit/436ffd7f20f3eac409108875e0cea45482feceb8))
+
+### Unknown
+
+* Merge pull request #12 from ivansaul/refactor
+
+feat: add subtitle download support ([`7288751`](https://github.com/ivansaul/platzi-downloader/commit/728875124fe8a45d0d5fe939bdc24fea18143f3a))
+
+* Merge pull request #11 from ivansaul/refactor
+
+docs: removes outdated download instructions ([`f728ab8`](https://github.com/ivansaul/platzi-downloader/commit/f728ab8117d36e11a0e922c880b202a180aefd4a))
+
+* Merge pull request #10 from ivansaul/refactor
+
+docs: update README with updated installation and usage instructions. ([`b74c429`](https://github.com/ivansaul/platzi-downloader/commit/b74c42966f9d88479833045c50194290f47e57ef))
+
 ## v0.2.0 (2024-11-17)
 
 ### Chore
