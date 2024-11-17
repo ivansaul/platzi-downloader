@@ -10,7 +10,7 @@ from .helpers import read_json, write_json
 from .logger import Logger
 from .m3u8 import m3u8_dl
 from .models import TypeUnit, User
-from .utils import progressive_scroll, slugify
+from .utils import download, progressive_scroll, slugify
 
 
 def login_required(func):
@@ -155,11 +155,18 @@ class AsyncPlatzi:
                 unit = await get_unit(self.context, unit_url)
                 name = f"{jdx:02}_{slugify(unit.title)}"
 
+                # download video
                 if unit.video:
                     dst = CHAP_DIR / f"{name}.mp4"
                     Logger.print(f"[{name}.mp4]", "[DOWNLOADING][VIDEO]")
                     await m3u8_dl(unit.video.url, dst.as_posix(), headers=HEADERS)
 
+                    if unit.video.subtitles_url:
+                        dst = CHAP_DIR / f"{name}.vtt"
+                        Logger.print(f"[{name}.vtt]", "[DOWNLOADING][SUBTITLES]")
+                        await download(unit.video.subtitles_url, dst)
+
+                # download lecture
                 if unit.type == TypeUnit.LECTURE:
                     Logger.print(f"[{name}.mhtml]", "[DOWNLOADING][LECTURE]")
                     await self.save_page(
