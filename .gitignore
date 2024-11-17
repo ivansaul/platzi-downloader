@@ -3,6 +3,10 @@
 *.json
 bin/
 downloads/
+.tmp/
+*.mp4
+*.ts
+*.mhtml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
