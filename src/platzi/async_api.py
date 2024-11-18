@@ -137,10 +137,12 @@ class AsyncPlatzi:
         DL_DIR.mkdir(parents=True, exist_ok=True)
 
         # save page as mhtml
-        await self.save_page(
-            page,
-            path=DL_DIR / "presentation.mhtml",
-        )
+        path_presentation = DL_DIR / "presentation.mhtml"
+        if not path_presentation.exists():
+            await self.save_page(
+                page,
+                path=path_presentation,
+            )
 
         # iterate over chapters
         draft_chapters = await get_draft_chapters(page)
@@ -167,24 +169,28 @@ class AsyncPlatzi:
                 if unit.video:
                     dst = CHAP_DIR / f"{file_name}.mp4"
                     Logger.print(f"[{dst.name}]", "[DOWNLOADING]")
-                    await m3u8_dl(unit.video.url, dst.as_posix(), headers=HEADERS)
+                    if not dst.exists():
+                        await m3u8_dl(unit.video.url, dst.as_posix(), headers=HEADERS)
 
                     if unit.video.subtitles_url:
                         dst = CHAP_DIR / f"{file_name}.vtt"
                         Logger.print(f"[{dst.name}]", "[DOWNLOADING]")
-                        await download(unit.video.subtitles_url, dst)
+                        if not dst.exists():
+                            await download(unit.video.subtitles_url, dst)
 
                 # download lecture
                 if unit.type == TypeUnit.LECTURE:
                     dst = CHAP_DIR / f"{file_name}.mhtml"
                     Logger.print(f"[{dst.name}]", "[DOWNLOADING]")
-                    await self.save_page(unit.url, path=dst)
+                    if not dst.exists():
+                        await self.save_page(unit.url, path=dst)
 
                 # download quiz
                 if unit.type == TypeUnit.QUIZ:
                     dst = CHAP_DIR / f"{file_name}.mhtml"
                     Logger.print(f"[{dst.name}]", "[DOWNLOADING]")
-                    await self.save_page(unit.url, path=dst)
+                    if not dst.exists():
+                        await self.save_page(unit.url, path=dst)
 
             print("=" * 100)
 
