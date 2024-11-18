@@ -180,6 +180,12 @@ class AsyncPlatzi:
                     Logger.print(f"[{dst.name}]", "[DOWNLOADING]")
                     await self.save_page(unit.url, path=dst)
 
+                # download quiz
+                if unit.type == TypeUnit.QUIZ:
+                    dst = CHAP_DIR / f"{file_name}.mhtml"
+                    Logger.print(f"[{dst.name}]", "[DOWNLOADING]")
+                    await self.save_page(unit.url, path=dst)
+
             print("=" * 100)
 
     @try_except_request
