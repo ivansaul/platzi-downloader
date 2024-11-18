@@ -73,6 +73,14 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
     TITLE_SELECTOR = ".MaterialDesktopHeading_MaterialDesktopHeading-info__title__DaYr2"
     EXCEPTION = Exception("Could not collect unit data")
 
+    if "/quiz/" in url:
+        return Unit(
+            url=url,
+            title="Quiz",
+            type=TypeUnit.QUIZ,
+            slug=slugify("Quiz"),
+        )
+
     try:
         page = await context.new_page()
         await page.goto(url)
