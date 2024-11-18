@@ -19,7 +19,7 @@ class User(BaseModel):
     phone_number: str
 
 
-class TypeUnit(Enum):
+class TypeUnit(str, Enum):
     LECTURE = "lecture"
     VIDEO = "video"
     QUIZ = "quiz"
