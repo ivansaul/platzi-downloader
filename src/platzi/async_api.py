@@ -4,13 +4,13 @@ from pathlib import Path
 
 from playwright.async_api import BrowserContext, Page, async_playwright
 
-from .collectors import get_chapters_urls, get_course_title, get_unit
+from .collectors import get_course_title, get_draft_chapters, get_unit
 from .constants import HEADERS, LOGIN_DETAILS_URL, LOGIN_URL, SESSION_FILE
-from .helpers import read_json, write_json
+from .helpers import hash_id, read_json, write_json
 from .logger import Logger
 from .m3u8 import m3u8_dl
-from .models import TypeUnit, User
-from .utils import download, progressive_scroll, slugify
+from .models import TypeUnit, Unit, User
+from .utils import Cache, download, progressive_scroll, slugify
 
 
 def login_required(func):
@@ -143,36 +143,42 @@ class AsyncPlatzi:
         )
 
         # iterate over chapters
-        chapters_urls = await get_chapters_urls(page)
-        for idx, (title, urls) in enumerate(chapters_urls, 1):
-            print(f"{title}")
+        draft_chapters = await get_draft_chapters(page)
+        for idx, draft_chapter in enumerate(draft_chapters, 1):
+            Logger.info(f"Downloading {draft_chapter.name}")
 
-            CHAP_DIR = DL_DIR / f"{idx:02}_{slugify(title)}"
+            CHAP_DIR = DL_DIR / f"{idx:02}_{draft_chapter.slug}"
             CHAP_DIR.mkdir(parents=True, exist_ok=True)
 
             # iterate over units
-            for jdx, unit_url in enumerate(urls, 1):
-                unit = await get_unit(self.context, unit_url)
-                name = f"{jdx:02}_{slugify(unit.title)}"
+            for jdx, draft_unit in enumerate(draft_chapter.units, 1):
+                cache_hash = hash_id(draft_unit.url)
+                cache_data = Cache.get(cache_hash)
+
+                if cache_data:
+                    unit = Unit.model_validate(cache_data)
+                else:
+                    unit = await get_unit(self.context, draft_unit.url)
+                    Cache.set(cache_hash, unit.model_dump())
+
+                file_name = f"{jdx:02}_{unit.slug}"
 
                 # download video
                 if unit.video:
-                    dst = CHAP_DIR / f"{name}.mp4"
-                    Logger.print(f"[{name}.mp4]", "[DOWNLOADING][VIDEO]")
+                    dst = CHAP_DIR / f"{file_name}.mp4"
+                    Logger.print(f"[{dst.name}]", "[DOWNLOADING]")
                     await m3u8_dl(unit.video.url, dst.as_posix(), headers=HEADERS)
 
                     if unit.video.subtitles_url:
-                        dst = CHAP_DIR / f"{name}.vtt"
-                        Logger.print(f"[{name}.vtt]", "[DOWNLOADING][SUBTITLES]")
+                        dst = CHAP_DIR / f"{file_name}.vtt"
+                        Logger.print(f"[{dst.name}]", "[DOWNLOADING]")
                         await download(unit.video.subtitles_url, dst)
 
                 # download lecture
                 if unit.type == TypeUnit.LECTURE:
-                    Logger.print(f"[{name}.mhtml]", "[DOWNLOADING][LECTURE]")
-                    await self.save_page(
-                        unit.url,
-                        path=CHAP_DIR / f"{name}.mhtml",
-                    )
+                    dst = CHAP_DIR / f"{file_name}.mhtml"
+                    Logger.print(f"[{dst.name}]", "[DOWNLOADING]")
+                    await self.save_page(unit.url, path=dst)
 
             print("=" * 100)
 

@@ -1,7 +1,7 @@
 from playwright.async_api import BrowserContext, Page
 
 from .constants import PLATZI_URL
-from .models import TypeUnit, Unit, Video
+from .models import Chapter, TypeUnit, Unit, Video
 from .utils import get_m3u8_url, get_subtitles_url, slugify
 
 
@@ -19,36 +19,53 @@ async def get_course_title(page: Page) -> str:
     return title
 
 
-async def get_chapters_urls(page: Page) -> list[tuple[str, list[str]]]:
+async def get_draft_chapters(page: Page) -> list[Chapter]:
     SELECTOR = ".Content-feed div.ContentBlock"
     EXCEPTION = Exception("No sections found")
     try:
         locator = page.locator(SELECTOR)
-        items = []
-        for i in range(await locator.count()):
-            title = await locator.nth(i).locator("h3").first.text_content()
 
-            if not title:
+        chapters: list[Chapter] = []
+        for i in range(await locator.count()):
+            chapter_name = await locator.nth(i).locator("h3").first.text_content()
+
+            if not chapter_name:
                 raise EXCEPTION
 
             block_list_locator = locator.nth(i).locator(".ContentBlock-list a")
 
-            urls: list[str] = []
+            units: list[Unit] = []
             for j in range(await block_list_locator.count()):
-                url = await block_list_locator.nth(j).get_attribute("href")
+                ITEM_LOCATOR = block_list_locator.nth(j)
 
-                if not url:
+                unit_url = await ITEM_LOCATOR.get_attribute("href")
+                unit_title = await ITEM_LOCATOR.locator("h5").first.text_content()
+
+                if not unit_url or not unit_title:
                     raise EXCEPTION
 
-                urls.append(PLATZI_URL + url)
+                units.append(
+                    Unit(
+                        type=TypeUnit.VIDEO,
+                        title=unit_title,
+                        url=PLATZI_URL + unit_url,
+                        slug=slugify(unit_title),
+                    )
+                )
 
-            items.append((title, urls))
+            chapters.append(
+                Chapter(
+                    name=chapter_name,
+                    slug=slugify(chapter_name),
+                    units=units,
+                )
+            )
 
     except Exception as e:
         await page.close()
         raise EXCEPTION from e
 
-    return items
+    return chapters
 
 
 async def get_unit(context: BrowserContext, url: str) -> Unit:
