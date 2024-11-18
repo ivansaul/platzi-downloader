@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v0.4.1 (2024-11-18)
+
+### Fix
+
+* fix: add handling for quiz URLs ([`6347ebb`](https://github.com/ivansaul/platzi-downloader/commit/6347ebb586269ebaaa2901cafd4d4212f77d5ff8))
+
+### Unknown
+
+* Merge pull request #18 from ivansaul/refactor
+
+fix: add handling for quiz URLs ([`186fe6b`](https://github.com/ivansaul/platzi-downloader/commit/186fe6b5e860b155c1f508bae56a494fd1f1181b))
+
 ## v0.4.0 (2024-11-18)
 
 ### Chore
