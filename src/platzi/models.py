@@ -19,7 +19,7 @@ class User(BaseModel):
     phone_number: str
 
 
-class TypeUnit(Enum):
+class TypeUnit(str, Enum):
     LECTURE = "lecture"
     VIDEO = "video"
     QUIZ = "quiz"
@@ -41,6 +41,7 @@ class Unit(BaseModel):
     type: TypeUnit
     title: str
     url: str
+    slug: str
     video: Video | None = None
     resources: list[Resource] | None = None
 
