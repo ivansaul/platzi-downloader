@@ -15,6 +15,7 @@ async def progressive_scroll(
 ):
     delta, total_time = 0.0, 0.0
     while total_time < time:
+        await asyncio.sleep(5)  # delay to avoid rate limiting
         await asyncio.sleep(delay)
         await page.mouse.wheel(0, steps)
         delta += steps

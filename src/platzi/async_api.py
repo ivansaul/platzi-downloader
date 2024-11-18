@@ -1,3 +1,4 @@
+import asyncio
 import functools
 import json
 from pathlib import Path
@@ -156,6 +157,8 @@ class AsyncPlatzi:
             for jdx, draft_unit in enumerate(draft_chapter.units, 1):
                 cache_hash = hash_id(draft_unit.url)
                 cache_data = Cache.get(cache_hash)
+
+                await asyncio.sleep(5)  # delay to avoid rate limiting
 
                 if cache_data:
                     unit = Unit.model_validate(cache_data)
