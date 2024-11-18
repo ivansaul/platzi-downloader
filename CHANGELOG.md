@@ -1,5 +1,37 @@
 # CHANGELOG
 
+## v0.4.0 (2024-11-18)
+
+### Chore
+
+* chore: add slug to Unit model
+
+Add a `slug` field to the `Unit` model and populates it using the slugified title. ([`07484ec`](https://github.com/ivansaul/platzi-downloader/commit/07484ecd20c27682b70c0a02bd2c874f42b49fa6))
+
+* chore: add type checking with MyPy
+
+Add MyPy and integrates it into the CI workflow. ([`d79bc90`](https://github.com/ivansaul/platzi-downloader/commit/d79bc90dd6871e1614c0cb646fdb2b6d867b76fb))
+
+### Feature
+
+* feat: add caching mechanism for API responses
+
+Introduces a `Cache` class to store and retrieve API responses using persistent storage. This improves performance by avoiding redundant API calls and enables offline access to previously fetched data.  The cache uses JSON files for storage. ([`df8ef74`](https://github.com/ivansaul/platzi-downloader/commit/df8ef746f5f96879f9768cb94b79d56dc12809a3))
+
+### Fix
+
+* fix: TypeUnit inherit from str ([`55c71fe`](https://github.com/ivansaul/platzi-downloader/commit/55c71fee533c49b3ce04c61a0a51edceedea1d4b))
+
+### Refactor
+
+* refactor: replace tempfile with platformdirs for persistent session management ([`4e6e1b8`](https://github.com/ivansaul/platzi-downloader/commit/4e6e1b892755d0352072f68f450128a4fcb77348))
+
+### Unknown
+
+* Merge pull request #17 from ivansaul/refactor
+
+feat: add caching mechanism for API responses ([`ec810cd`](https://github.com/ivansaul/platzi-downloader/commit/ec810cd9ef50888e1da9deb198a5471eea6e9433))
+
 ## v0.3.0 (2024-11-17)
 
 ### Documentation
