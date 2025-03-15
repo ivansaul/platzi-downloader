@@ -1,3 +1,5 @@
+import asyncio
+
 from playwright.async_api import BrowserContext, Page
 
 from .constants import PLATZI_URL
@@ -84,6 +86,8 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
     try:
         page = await context.new_page()
         await page.goto(url)
+
+        await asyncio.sleep(5)  # delay to avoid rate limiting
 
         title = await page.locator(TITLE_SELECTOR).first.text_content()
 

@@ -13,6 +13,7 @@ from .helpers import read_json, write_json
 async def progressive_scroll(
     page: Page, time: float = 3, delay: float = 0.1, steps: int = 250
 ):
+    await asyncio.sleep(3)  # delay to avoid rate limiting
     delta, total_time = 0.0, 0.0
     while total_time < time:
         await asyncio.sleep(delay)
