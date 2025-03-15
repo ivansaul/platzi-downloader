@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## v0.4.2 (2025-03-15)
+
+### Chore
+
+* chore: add .vtt files to .gitignore ([`c4cb668`](https://github.com/ivansaul/platzi-downloader/commit/c4cb668063b129dc9641910c0c4c3152abef2aea))
+
+### Ci
+
+* ci: update workflow to remove macOS from testing matrix ([`ab49d61`](https://github.com/ivansaul/platzi-downloader/commit/ab49d61987ab91fc54f5069831b9c76d1692dbf4))
+
+### Documentation
+
+* docs: add troubleshooting tips for m3u8 and ts download errors in README.md ([`0b6d170`](https://github.com/ivansaul/platzi-downloader/commit/0b6d1703ca42f5610968d3d03c95a4337c0c6c84))
+
+### Fix
+
+* fix: adds delays to avoid rate limiting ([`ba58014`](https://github.com/ivansaul/platzi-downloader/commit/ba58014e4c13e3301605ab1f8bb154a05f858be7))
+
+* fix: reduce batch size for TS downloads from 10 to 5 ([`554affb`](https://github.com/ivansaul/platzi-downloader/commit/554affbb0dd189b89a67be1dc5a9caf725e69bab))
+
+* fix: update selectors for course title and draft chapters in collectors.py ([`0100e2f`](https://github.com/ivansaul/platzi-downloader/commit/0100e2fb49304fe0ef1a2b77146897f5b36c89e2))
+
+### Unknown
+
+* Merge pull request #20 from ivansaul/develop
+
+fix(ci, docs): improve collectors, downloads, and CI ([`5138848`](https://github.com/ivansaul/platzi-downloader/commit/51388483f210ad07900bef942afcff8708f5513c))
+
 ## v0.4.1 (2024-11-18)
 
 ### Fix
