@@ -48,7 +48,7 @@ async def _ts_dl(url: str, path: Path, **kwargs):
 
 
 async def _worker_ts_dl(urls: list, dir: Path, **kwargs):
-    BATCH_SIZE = 10
+    BATCH_SIZE = 5
     IDX = 1
 
     with tqdm(total=len(urls)) as bar:
