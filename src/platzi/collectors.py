@@ -34,7 +34,9 @@ async def get_draft_chapters(page: Page) -> list[Chapter]:
             if not chapter_name:
                 raise EXCEPTION
 
-            block_list_locator = locator.nth(i).locator(".SyllabusSection_SyllabusSection__Materials__C2hlu a")
+            block_list_locator = locator.nth(i).locator(
+                ".SyllabusSection_SyllabusSection__Materials__C2hlu a"
+            )
 
             units: list[Unit] = []
             for j in range(await block_list_locator.count()):
