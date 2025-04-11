@@ -88,13 +88,20 @@ platzi logout
 Para descargar un curso de Platzi, usa el comando download seguido de la URL del curso que deseas descargar. La URL puede encontrarse en la barra de direcciones al visualizar la página del curso en Platzi.
 
 ```console
-platzi download <url-del-curso>
+platzi download URL [OPTIONS]
+
+OPTIONS:
+  --overwrite / -w  Overwrite files if exist.
 ```
 
-Ejemplo:
+Ejemplos:
 
 ```console
-platzi download https://platzi.com/cursos/fastapi-2023/
+platzi download https://platzi.com/cursos/fastapi-2023
+```
+
+```console
+platzi download https://platzi.com/cursos/fastapi-2023 -w
 ```
 
 ### Borrar Caché

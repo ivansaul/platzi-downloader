@@ -46,7 +46,7 @@ async def _ts_dl(url: str, path: Path, **kwargs):
         if not response.ok:
             raise Exception("Error downloading from .ts url")
 
-        async with aiofiles.open(path.as_posix(), "wb") as file:
+        async with aiofiles.open(path, "wb") as file:
             async with response.stream() as streamer:
                 async for chunk in streamer:
                     await file.write(chunk)
@@ -81,20 +81,22 @@ async def _worker_ts_dl(urls: list, dir: Path, **kwargs):
 
 async def _m3u8_dl(
     url: str,
-    path: str,
-    tmp_dir: str = ".tmp",
+    path: str | Path,
     **kwargs,
 ) -> None:
-    overrides = kwargs.get("overrides", False)
+    path = path if isinstance(path, Path) else Path(path)
+    overwrite = kwargs.get("overwrite", False)
+    tmp_dir = kwargs.get("tmp_dir", ".tmp")
+    tmp_dir = tmp_dir if isinstance(tmp_dir, Path) else Path(tmp_dir)
 
-    if not overrides and Path(path).exists():
+    if not overwrite and path.exists():
         return
 
     hash = _hash_id(url)
 
-    Path(path).unlink(missing_ok=True)
-    Path(path).parent.mkdir(parents=True, exist_ok=True)
-    Path(tmp_dir).mkdir(parents=True, exist_ok=True)
+    path.unlink(missing_ok=True)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_dir.mkdir(parents=True, exist_ok=True)
 
     client = rnet.Client(impersonate=rnet.Impersonate.Firefox135)
     response: rnet.Response = await client.get(url, **kwargs)
@@ -141,7 +143,7 @@ async def _m3u8_dl(
         list_file.as_posix(),
         "-c",
         "copy",
-        "-y" if overrides else "-n",
+        "-y" if overwrite else "-n",
         path,
     ]
 
@@ -160,11 +162,25 @@ async def _m3u8_dl(
 
 async def m3u8_dl(
     url: str,
-    path: str,
-    tmp_dir: str = ".tmp",
+    path: str | Path,
     **kwargs,
-):
+) -> None:
+    """
+    Download a m3u8 file and convert it to mp4.
+
+    :param url(str): The URL of the m3u8 file to download.
+    :param path(str): The path to save the converted mp4 file.
+    :param tmp_dir(str | Path): The directory to save the temporary files.
+    :param kwargs: Additional keyword arguments to pass to the requests client.
+    :return: None
+    """
     # TODO: implement quality selection
+
+    overwrite = kwargs.get("overwrite", False)
+    path = path if isinstance(path, Path) else Path(path)
+
+    if not overwrite and path.exists():
+        return
 
     client = rnet.Client(impersonate=rnet.Impersonate.Firefox135)
     response: rnet.Response = await client.get(url, **kwargs)

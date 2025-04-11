@@ -2,6 +2,7 @@ import functools
 import json
 from pathlib import Path
 
+import aiofiles
 from playwright.async_api import BrowserContext, Page, async_playwright
 
 from .collectors import get_course_title, get_draft_chapters, get_unit
@@ -137,10 +138,8 @@ class AsyncPlatzi:
         DL_DIR.mkdir(parents=True, exist_ok=True)
 
         # save page as mhtml
-        await self.save_page(
-            page,
-            path=DL_DIR / "presentation.mhtml",
-        )
+        presentation_path = DL_DIR / "presentation.mhtml"
+        await self.save_page(page, path=presentation_path, **kwargs)
 
         # iterate over chapters
         draft_chapters = await get_draft_chapters(page)
@@ -160,12 +159,12 @@ class AsyncPlatzi:
                 if unit.video:
                     dst = CHAP_DIR / f"{file_name}.mp4"
                     Logger.print(f"[{dst.name}]", "[DOWNLOADING]")
-                    await m3u8_dl(unit.video.url, dst.as_posix(), headers=HEADERS)
+                    await m3u8_dl(unit.video.url, dst, headers=HEADERS, **kwargs)
 
                     if unit.video.subtitles_url:
                         dst = CHAP_DIR / f"{file_name}.vtt"
                         Logger.print(f"[{dst.name}]", "[DOWNLOADING]")
-                        await download(unit.video.subtitles_url, dst)
+                        await download(unit.video.subtitles_url, dst, **kwargs)
 
                 # download lecture
                 if unit.type == TypeUnit.LECTURE:
@@ -182,7 +181,17 @@ class AsyncPlatzi:
             print("=" * 100)
 
     @try_except_request
-    async def save_page(self, src: str | Page, path: str = "source.mhtml"):
+    async def save_page(
+        self,
+        src: str | Page,
+        path: str | Path = "source.mhtml",
+        **kwargs,
+    ):
+        overwrite: bool = kwargs.get("overwrite", False)
+
+        if not overwrite and Path(path).exists():
+            return
+
         if isinstance(src, str):
             page = await self.page
             await page.goto(src)
@@ -194,8 +203,8 @@ class AsyncPlatzi:
         try:
             client = await page.context.new_cdp_session(page)
             response = await client.send("Page.captureSnapshot")
-            with open(path, "w", encoding="utf-8", newline="\n") as file:
-                file.write(response["data"])
+            async with aiofiles.open(path, "w", encoding="utf-8", newline="\n") as file:
+                await file.write(response["data"])
         except Exception:
             raise Exception("Error saving page as mhtml")
 

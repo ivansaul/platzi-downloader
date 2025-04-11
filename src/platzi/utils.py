@@ -90,9 +90,9 @@ def get_subtitles_url(content: str) -> str | None:
 
 
 async def download(url: str, path: Path, **kwargs):
-    overrides = kwargs.get("overrides", False)
+    overwrite = kwargs.get("overrides", False)
 
-    if not overrides and path.exists():
+    if not overwrite and path.exists():
         return
 
     path.unlink(missing_ok=True)
@@ -105,7 +105,7 @@ async def download(url: str, path: Path, **kwargs):
         if not response.ok:
             raise Exception("[Bad Response]")
 
-        async with aiofiles.open(path.as_posix(), "wb") as file:
+        async with aiofiles.open(path, "wb") as file:
             async with response.stream() as streamer:
                 async for chunk in streamer:
                     await file.write(chunk)
