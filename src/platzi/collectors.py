@@ -72,7 +72,7 @@ async def get_draft_chapters(page: Page) -> list[Chapter]:
 
 async def get_unit(context: BrowserContext, url: str) -> Unit:
     TYPE_SELECTOR = ".VideoPlayer"
-    TITLE_SELECTOR = ".MaterialDesktopHeading_MaterialDesktopHeading-info__title__XMhhQ"
+    TITLE_SELECTOR = ".MaterialDesktopHeading_MaterialDesktopHeading-info__title__luzx8"
     EXCEPTION = Exception("Could not collect unit data")
 
     if "/quiz/" in url:
