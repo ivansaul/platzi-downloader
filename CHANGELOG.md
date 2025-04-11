@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## v0.5.0 (2025-04-11)
+
+### Documentation
+
+* docs: add clear-cache command in usage guide ([`c29cda1`](https://github.com/ivansaul/platzi-downloader/commit/c29cda17830ea3036f5fcfc357879cb80d4cebfc))
+
+### Feature
+
+* feat: implement caching mechanism and CLI command to clear cache ([`a3788c4`](https://github.com/ivansaul/platzi-downloader/commit/a3788c4c18912102ba410e9d40db95a9dce8ee31))
+
+### Refactor
+
+* refactor: remove debug print statements from cache wrapper ([`7dbb769`](https://github.com/ivansaul/platzi-downloader/commit/7dbb769eef200c4a312557ffe9e1c640b2c4c594))
+
+### Style
+
+* style: format collectors for better readability ([`dcde95a`](https://github.com/ivansaul/platzi-downloader/commit/dcde95aa3c170ceb94561378c51aa20e5e7e00ce))
+
+### Unknown
+
+* Merge pull request #22 from ivansaul/develop
+
+Add Cache Mechanism and Clear Command ([`5916652`](https://github.com/ivansaul/platzi-downloader/commit/59166521bd8b778f7cc4f7e343c5f9db85786b4f))
+
 ## v0.4.3 (2025-04-11)
 
 ### Chore
