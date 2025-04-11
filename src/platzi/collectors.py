@@ -2,11 +2,13 @@ import asyncio
 
 from playwright.async_api import BrowserContext, Page
 
+from .cache import Cache
 from .constants import PLATZI_URL
 from .models import Chapter, TypeUnit, Unit, Video
 from .utils import get_m3u8_url, get_subtitles_url, slugify
 
 
+@Cache.cache_async
 async def get_course_title(page: Page) -> str:
     SELECTOR = ".CourseInfo_CourseInfo__Title__4Fwov"
     EXCEPTION = Exception("No course title found")
@@ -21,6 +23,7 @@ async def get_course_title(page: Page) -> str:
     return title
 
 
+@Cache.cache_async
 async def get_draft_chapters(page: Page) -> list[Chapter]:
     SELECTOR = ".Syllabus_Syllabus__bVYL_ article"
     EXCEPTION = Exception("No sections found")
@@ -72,6 +75,7 @@ async def get_draft_chapters(page: Page) -> list[Chapter]:
     return chapters
 
 
+@Cache.cache_async
 async def get_unit(context: BrowserContext, url: str) -> Unit:
     TYPE_SELECTOR = ".VideoPlayer"
     TITLE_SELECTOR = ".MaterialDesktopHeading_MaterialDesktopHeading-info__title__luzx8"
