@@ -6,11 +6,11 @@ from playwright.async_api import BrowserContext, Page, async_playwright
 
 from .collectors import get_course_title, get_draft_chapters, get_unit
 from .constants import HEADERS, LOGIN_DETAILS_URL, LOGIN_URL, SESSION_FILE
-from .helpers import hash_id, read_json, write_json
+from .helpers import read_json, write_json
 from .logger import Logger
 from .m3u8 import m3u8_dl
-from .models import TypeUnit, Unit, User
-from .utils import Cache, download, progressive_scroll, slugify
+from .models import TypeUnit, User
+from .utils import download, progressive_scroll, slugify
 
 
 def login_required(func):
@@ -152,14 +152,7 @@ class AsyncPlatzi:
 
             # iterate over units
             for jdx, draft_unit in enumerate(draft_chapter.units, 1):
-                cache_hash = hash_id(draft_unit.url)
-                cache_data = Cache.get(cache_hash)
-
-                if cache_data:
-                    unit = Unit.model_validate(cache_data)
-                else:
-                    unit = await get_unit(self.context, draft_unit.url)
-                    Cache.set(cache_hash, unit.model_dump())
+                unit = await get_unit(self.context, draft_unit.url)
 
                 file_name = f"{jdx:02}_{unit.slug}"
 

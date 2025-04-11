@@ -7,9 +7,6 @@ import rnet
 from playwright.async_api import Page
 from unidecode import unidecode
 
-from .constants import SESSION_DIR
-from .helpers import read_json, write_json
-
 
 async def progressive_scroll(
     page: Page, time: float = 3, delay: float = 0.1, steps: int = 250
@@ -118,22 +115,3 @@ async def download(url: str, path: Path, **kwargs):
 
     finally:
         response.close()
-
-
-class Cache:
-    @classmethod
-    def get(cls, id: str) -> dict | None:
-        path = SESSION_DIR / f"{id}.json"
-        try:
-            return read_json(path.as_posix())
-        except Exception:
-            return None
-
-    @classmethod
-    def set(cls, id: str, content: dict) -> None:
-        path = SESSION_DIR / f"{id}.json"
-        path.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            write_json(path.as_posix(), content)
-        except Exception:
-            pass

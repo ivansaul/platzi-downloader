@@ -23,3 +23,7 @@ HEADERS = {
 
 # --- Session directory ---
 SESSION_FILE.parent.mkdir(parents=True, exist_ok=True)
+
+# --- Cache directory ---
+CACHE_DIR = SESSION_DIR / "cache"
+CACHE_DIR.mkdir(parents=True, exist_ok=True)

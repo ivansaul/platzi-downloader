@@ -1,9 +1,10 @@
 import asyncio
 
 import typer
+from rich import print
 from typing_extensions import Annotated
 
-from platzi import AsyncPlatzi
+from platzi import AsyncPlatzi, Cache
 
 app = typer.Typer(rich_markup_mode="rich")
 
@@ -53,6 +54,18 @@ def download(
         platzi download https://platzi.com/cursos/fastapi-2023/
     """
     asyncio.run(_download(url))
+
+
+@app.command()
+def clear_cache():
+    """
+    Clear the Platzi CLI cache.
+
+    Usage:
+        platzi clear-cache
+    """
+    Cache.clear()
+    print("[green]Cache cleared successfully 🗑️[/green]")
 
 
 async def _login():

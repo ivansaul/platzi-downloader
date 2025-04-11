@@ -97,6 +97,14 @@ Ejemplo:
 platzi download https://platzi.com/cursos/fastapi-2023/
 ```
 
+### Borrar Caché
+
+Para borrar la caché de Platzi, usa el comando `clear-cache`.
+
+```console
+platzi clear-cache
+```
+
 > [!IMPORTANT]
 > Asegúrate de estar logueado antes de intentar descargar los cursos.
 
@@ -109,6 +117,11 @@ platzi download https://platzi.com/cursos/fastapi-2023/
 
 > [!TIP]
 > Si obtienes algún error relacionado a `m3u8`o `ts` como por ejemplo; `Error downloading from .ts url` o `Error downloading m3u8`, elimina la carpeta temporal `.tmp` y vuelve a ejecutar el comando.
+
+<br>
+
+> [!TIP]
+> Luego de actualizar el script u obtener algún error inesperado se recomienda limpiar la caché antes de volver a intentar descargar el curso. Puedes hacerlo ejecutando el comando `platzi clear-cache`.
 
 ## **Aviso de Uso**
 

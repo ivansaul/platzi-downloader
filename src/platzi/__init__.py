@@ -1,4 +1,4 @@
 from .async_api import AsyncPlatzi
-from .m3u8 import m3u8_dl
+from .cache import Cache
 
-__all__ = ["m3u8_dl", "AsyncPlatzi"]
+__all__ = ["AsyncPlatzi", "Cache"]
