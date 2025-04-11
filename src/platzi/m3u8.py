@@ -7,7 +7,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import aiohttp
+import aiofiles
+import rnet
 from tqdm.asyncio import tqdm
 
 from .logger import Logger
@@ -31,7 +32,6 @@ def _hash_id(input: str) -> str:
 
 async def _ts_dl(url: str, path: Path, **kwargs):
     overrides = kwargs.get("overrides", False)
-    headers = kwargs.get("headers", None)
 
     if not overrides and path.exists():
         return
@@ -39,12 +39,23 @@ async def _ts_dl(url: str, path: Path, **kwargs):
     path.unlink(missing_ok=True)
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url, headers=headers) as response:
-            if response.status != 200:
-                raise Exception("Error downloading from .ts url")
-            with open(path.as_posix(), "wb") as file:
-                file.write(await response.read())
+    client = rnet.Client(impersonate=rnet.Impersonate.Firefox135)
+    response: rnet.Response = await client.get(url, **kwargs)
+
+    try:
+        if not response.ok:
+            raise Exception("Error downloading from .ts url")
+
+        async with aiofiles.open(path.as_posix(), "wb") as file:
+            async with response.stream() as streamer:
+                async for chunk in streamer:
+                    await file.write(chunk)
+
+    except Exception:
+        raise
+
+    finally:
+        response.close()
 
 
 async def _worker_ts_dl(urls: list, dir: Path, **kwargs):
@@ -75,7 +86,6 @@ async def _m3u8_dl(
     **kwargs,
 ) -> None:
     overrides = kwargs.get("overrides", False)
-    headers = kwargs.get("headers", None)
 
     if not overrides and Path(path).exists():
         return
@@ -86,20 +96,28 @@ async def _m3u8_dl(
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     Path(tmp_dir).mkdir(parents=True, exist_ok=True)
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url, headers=headers) as response:
-            if response.status != 200:
-                raise Exception("Error downloading m3u8")
+    client = rnet.Client(impersonate=rnet.Impersonate.Firefox135)
+    response: rnet.Response = await client.get(url, **kwargs)
 
-            pattern = r"https?://[^\s]+"
-            ts_urls = re.findall(pattern, await response.text())
+    try:
+        if not response.ok:
+            raise Exception("Error downloading m3u8")
 
-            if not ts_urls:
-                raise Exception("No ts urls found")
+        pattern = r"https?://[^\s]+"
+        ts_urls = re.findall(pattern, await response.text())
 
-            dir = Path(tmp_dir) / _hash_id(url)
+        if not ts_urls:
+            raise Exception("No ts urls found")
 
-            await _worker_ts_dl(ts_urls, dir, **kwargs)
+        dir = Path(tmp_dir) / _hash_id(url)
+
+        await _worker_ts_dl(ts_urls, dir, **kwargs)
+
+    except Exception:
+        raise
+
+    finally:
+        response.close()
 
     ts_files = os.listdir(dir)
     ts_files = [ts for ts in ts_files if ts.endswith(".ts")]
@@ -147,17 +165,24 @@ async def m3u8_dl(
     **kwargs,
 ):
     # TODO: implement quality selection
-    headers = kwargs.get("headers", None)
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url, headers=headers) as response:
-            if response.status != 200:
-                raise Exception("Error downloading m3u8")
+    client = rnet.Client(impersonate=rnet.Impersonate.Firefox135)
+    response: rnet.Response = await client.get(url, **kwargs)
 
-            pattern = r"https?://[^\s]+"
-            m3u8_urls = re.findall(pattern, await response.text())
+    try:
+        if not response.ok:
+            raise Exception("Error downloading m3u8")
 
-            if not m3u8_urls:
-                raise Exception("No m3u8 urls found")
+        pattern = r"https?://[^\s]+"
+        m3u8_urls = re.findall(pattern, await response.text())
 
-            await _m3u8_dl(m3u8_urls[0], path, **kwargs)
+        if not m3u8_urls:
+            raise Exception("No m3u8 urls found")
+
+        await _m3u8_dl(m3u8_urls[0], path, **kwargs)
+
+    except Exception:
+        raise
+
+    finally:
+        response.close()

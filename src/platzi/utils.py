@@ -2,7 +2,8 @@ import asyncio
 import re
 from pathlib import Path
 
-import aiohttp
+import aiofiles
+import rnet
 from playwright.async_api import Page
 from unidecode import unidecode
 
@@ -93,7 +94,6 @@ def get_subtitles_url(content: str) -> str | None:
 
 async def download(url: str, path: Path, **kwargs):
     overrides = kwargs.get("overrides", False)
-    headers = kwargs.get("headers", None)
 
     if not overrides and path.exists():
         return
@@ -101,14 +101,23 @@ async def download(url: str, path: Path, **kwargs):
     path.unlink(missing_ok=True)
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url, headers=headers) as response:
-            if response.status != 200:
-                raise Exception(f"Error downloading file: [{path.name}]")
+    client = rnet.Client(impersonate=rnet.Impersonate.Firefox135)
+    response: rnet.Response = await client.get(url, **kwargs)
 
-            with open(path.as_posix(), "wb") as file:
-                async for chunk in response.content.iter_chunked(1024):
-                    file.write(chunk)
+    try:
+        if not response.ok:
+            raise Exception("[Bad Response]")
+
+        async with aiofiles.open(path.as_posix(), "wb") as file:
+            async with response.stream() as streamer:
+                async for chunk in streamer:
+                    await file.write(chunk)
+
+    except Exception as e:
+        raise Exception(f"Error downloading file: [{path.name}]") from e
+
+    finally:
+        response.close()
 
 
 class Cache:
