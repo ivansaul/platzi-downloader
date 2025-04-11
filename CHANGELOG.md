@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## v0.4.3 (2025-04-11)
+
+### Chore
+
+* chore(typing): add types-aiofiles to dev deps ([`a23edfa`](https://github.com/ivansaul/platzi-downloader/commit/a23edfaf9798481cc059a5af9a1f17e8f9df7bf0))
+
+### Fix
+
+* fix: update title selector for Unit data collection ([`8491c4d`](https://github.com/ivansaul/platzi-downloader/commit/8491c4dfb0e7db7782abc222d32e92b0d78971a1))
+
+### Refactor
+
+* refactor: replace aiohttp with rnet ([`b3e7380`](https://github.com/ivansaul/platzi-downloader/commit/b3e7380acdcf213384dffcd0e932b97a2f248805))
+
+### Unknown
+
+* Merge pull request #21 from ivansaul/develop
+
+Replace aiohttp with rnet and fix Unit title selector ([`1450f92`](https://github.com/ivansaul/platzi-downloader/commit/1450f92e282e0cd7449adca601e4282771263170))
+
 ## v0.4.2 (2025-03-15)
 
 ### Chore
