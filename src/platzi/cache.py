@@ -61,10 +61,8 @@ class Cache:
         async def wrapper(*args, **kwargs):
             cache_id = cls._make_id(func, args, kwargs)
             if cached := await cls.get(cache_id):
-                print("from Cache")
                 return cached
             result = await func(*args, **kwargs)
-            print("from request")
             await cls.set(cache_id, result)
             return result
 
