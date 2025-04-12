@@ -11,6 +11,8 @@ import aiofiles
 import rnet
 from tqdm.asyncio import tqdm
 
+from .helpers import retry
+
 
 def ffmpeg_required(func):
     @functools.wraps(func)
@@ -92,6 +94,7 @@ async def _worker_ts_dl(urls: list, dir: Path, **kwargs):
             bar.update(len(urls_batch))
 
 
+@retry()
 async def _m3u8_dl(
     url: str,
     path: str | Path,

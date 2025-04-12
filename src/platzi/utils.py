@@ -7,6 +7,8 @@ import rnet
 from playwright.async_api import Page
 from unidecode import unidecode
 
+from .helpers import retry
+
 
 async def progressive_scroll(
     page: Page, time: float = 3, delay: float = 0.1, steps: int = 250
@@ -89,6 +91,7 @@ def get_subtitles_url(content: str) -> str | None:
     return matches[0]
 
 
+@retry()
 async def download(url: str, path: Path, **kwargs):
     overwrite = kwargs.get("overwrite", False)
 
