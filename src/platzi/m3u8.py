@@ -27,6 +27,22 @@ def _hash_id(input: str) -> str:
     return hash_object.hexdigest()
 
 
+def _extract_streaming_urls(content: str) -> list[str] | None:
+    BASE_URL = "https://mediastream.platzi.com"
+    pattern = r"(https?://[^\s]+|(?::)?///?[^\s]+)"
+    matches = re.findall(pattern, content)
+
+    urls = []
+    for match in matches:
+        if match.startswith("http"):
+            urls.append(match)
+        else:
+            full_url = BASE_URL.rstrip("/") + "/" + match.lstrip(":/")
+            urls.append(full_url)
+
+    return urls or None
+
+
 async def _ts_dl(url: str, path: Path, **kwargs):
     overwrite = kwargs.get("overwrite", False)
 
@@ -102,8 +118,7 @@ async def _m3u8_dl(
         if not response.ok:
             raise Exception("Error downloading m3u8")
 
-        pattern = r"https?://[^\s]+"
-        ts_urls = re.findall(pattern, await response.text())
+        ts_urls = _extract_streaming_urls(await response.text())
 
         if not ts_urls:
             raise Exception("No ts urls found")
@@ -187,8 +202,7 @@ async def m3u8_dl(
         if not response.ok:
             raise Exception("Error downloading m3u8")
 
-        pattern = r"https?://[^\s]+"
-        m3u8_urls = re.findall(pattern, await response.text())
+        m3u8_urls = _extract_streaming_urls(await response.text())
 
         if not m3u8_urls:
             raise Exception("No m3u8 urls found")
