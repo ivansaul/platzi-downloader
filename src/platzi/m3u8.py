@@ -11,15 +11,14 @@ import aiofiles
 import rnet
 from tqdm.asyncio import tqdm
 
-from .logger import Logger
+from .helpers import retry
 
 
 def ffmpeg_required(func):
     @functools.wraps(func)
     async def wrapper(*args, **kwargs):
         if not shutil.which("ffmpeg"):
-            Logger.error("ffmpeg is not installed")
-            return
+            raise Exception("ffmpeg is not installed")
         return await func(*args, **kwargs)
 
     return wrapper
@@ -30,10 +29,26 @@ def _hash_id(input: str) -> str:
     return hash_object.hexdigest()
 
 
-async def _ts_dl(url: str, path: Path, **kwargs):
-    overrides = kwargs.get("overrides", False)
+def _extract_streaming_urls(content: str) -> list[str] | None:
+    BASE_URL = "https://mediastream.platzi.com"
+    pattern = r"(https?://[^\s]+|(?::)?///?[^\s]+)"
+    matches = re.findall(pattern, content)
 
-    if not overrides and path.exists():
+    urls = []
+    for match in matches:
+        if match.startswith("http"):
+            urls.append(match)
+        else:
+            full_url = BASE_URL.rstrip("/") + "/" + match.lstrip(":/")
+            urls.append(full_url)
+
+    return urls or None
+
+
+async def _ts_dl(url: str, path: Path, **kwargs):
+    overwrite = kwargs.get("overwrite", False)
+
+    if not overwrite and path.exists():
         return
 
     path.unlink(missing_ok=True)
@@ -46,7 +61,7 @@ async def _ts_dl(url: str, path: Path, **kwargs):
         if not response.ok:
             raise Exception("Error downloading from .ts url")
 
-        async with aiofiles.open(path.as_posix(), "wb") as file:
+        async with aiofiles.open(path, "wb") as file:
             async with response.stream() as streamer:
                 async for chunk in streamer:
                     await file.write(chunk)
@@ -79,22 +94,25 @@ async def _worker_ts_dl(urls: list, dir: Path, **kwargs):
             bar.update(len(urls_batch))
 
 
+@retry()
 async def _m3u8_dl(
     url: str,
-    path: str,
-    tmp_dir: str = ".tmp",
+    path: str | Path,
     **kwargs,
 ) -> None:
-    overrides = kwargs.get("overrides", False)
+    path = path if isinstance(path, Path) else Path(path)
+    overwrite = kwargs.get("overwrite", False)
+    tmp_dir = kwargs.get("tmp_dir", ".tmp")
+    tmp_dir = tmp_dir if isinstance(tmp_dir, Path) else Path(tmp_dir)
 
-    if not overrides and Path(path).exists():
+    if not overwrite and path.exists():
         return
 
     hash = _hash_id(url)
 
-    Path(path).unlink(missing_ok=True)
-    Path(path).parent.mkdir(parents=True, exist_ok=True)
-    Path(tmp_dir).mkdir(parents=True, exist_ok=True)
+    path.unlink(missing_ok=True)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_dir.mkdir(parents=True, exist_ok=True)
 
     client = rnet.Client(impersonate=rnet.Impersonate.Firefox135)
     response: rnet.Response = await client.get(url, **kwargs)
@@ -103,8 +121,7 @@ async def _m3u8_dl(
         if not response.ok:
             raise Exception("Error downloading m3u8")
 
-        pattern = r"https?://[^\s]+"
-        ts_urls = re.findall(pattern, await response.text())
+        ts_urls = _extract_streaming_urls(await response.text())
 
         if not ts_urls:
             raise Exception("No ts urls found")
@@ -141,7 +158,7 @@ async def _m3u8_dl(
         list_file.as_posix(),
         "-c",
         "copy",
-        "-y" if overrides else "-n",
+        "-y" if overwrite else "-n",
         path,
     ]
 
@@ -158,13 +175,28 @@ async def _m3u8_dl(
         raise Exception("Error converting m3u8 to mp4")
 
 
+@ffmpeg_required
 async def m3u8_dl(
     url: str,
-    path: str,
-    tmp_dir: str = ".tmp",
+    path: str | Path,
     **kwargs,
-):
+) -> None:
+    """
+    Download a m3u8 file and convert it to mp4.
+
+    :param url(str): The URL of the m3u8 file to download.
+    :param path(str): The path to save the converted mp4 file.
+    :param tmp_dir(str | Path): The directory to save the temporary files.
+    :param kwargs: Additional keyword arguments to pass to the requests client.
+    :return: None
+    """
     # TODO: implement quality selection
+
+    overwrite = kwargs.get("overwrite", False)
+    path = path if isinstance(path, Path) else Path(path)
+
+    if not overwrite and path.exists():
+        return
 
     client = rnet.Client(impersonate=rnet.Impersonate.Firefox135)
     response: rnet.Response = await client.get(url, **kwargs)
@@ -173,8 +205,7 @@ async def m3u8_dl(
         if not response.ok:
             raise Exception("Error downloading m3u8")
 
-        pattern = r"https?://[^\s]+"
-        m3u8_urls = re.findall(pattern, await response.text())
+        m3u8_urls = _extract_streaming_urls(await response.text())
 
         if not m3u8_urls:
             raise Exception("No m3u8 urls found")

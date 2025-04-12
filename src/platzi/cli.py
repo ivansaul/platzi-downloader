@@ -40,6 +40,15 @@ def download(
             show_default=False,
         ),
     ],
+    overwrite: Annotated[
+        bool,
+        typer.Option(
+            "--overwrite",
+            "-w",
+            help="Overwrite files if exist.",
+            show_default=True,
+        ),
+    ] = False,
 ):
     """
     Download a Platzi course from the given URL.
@@ -53,7 +62,7 @@ def download(
     Example:
         platzi download https://platzi.com/cursos/fastapi-2023/
     """
-    asyncio.run(_download(url))
+    asyncio.run(_download(url, overwrite=overwrite))
 
 
 @app.command()
@@ -78,6 +87,6 @@ async def _logout():
         await platzi.logout()
 
 
-async def _download(url: str):
+async def _download(url: str, **kwargs):
     async with AsyncPlatzi() as platzi:
-        await platzi.download(url)
+        await platzi.download(url, **kwargs)
