@@ -17,7 +17,10 @@ def test_get_course_slug():
         ("Hello, World!", "Hello World"),
         ("   1234:;<>?{}|", "1234"),
         ("Café! Frío?", "Café Frío"),
-        ("º~ª Special chars: @#$%^&*()!", "Special chars"),
+        ("º~ª Special chars: @#$%^&*≠()!", "Special chars"),
+        ("with ★ emoji 😎", "with emoji"),
+        ("new \nlines\n\n\n", "new lines"),
+        ("España, München", "España München"),
     ],
 )
 def test_clean_string(text, expected):
@@ -31,6 +34,9 @@ def test_clean_string(text, expected):
         ("   1234:;<>?{}|", "1234"),
         ("Café! Frío?", "cafe-frio"),
         ("º~ª Special chars: @#$%^&*()!", "special-chars"),
+        ("with ★ emoji 😎", "with-emoji"),
+        ("new \nlines\n\n\n", "new-lines"),
+        ("España, München", "espana-munchen"),
     ],
 )
 def test_slugify(text, expected):
