@@ -26,14 +26,14 @@ def get_course_slug(url: str) -> str:
     """
     Extracts the course slug from a Platzi course URL.
 
-    Args:
-        url (str): The Platzi course URL.
+    :param url(str): The Platzi course URL.
+    :return str: The course slug.
+    :raises Exception: If the URL is not a valid Platzi course URL.
 
-    Returns:
-        str: The course slug.
-
-    Raises:
-        Exception: If the URL is not a valid Platzi course URL.
+    Example
+    -------
+    >>> get_course_slug("https://platzi.com/cursos/fastapi-2023/")
+    "fastapi-2023"
     """
     pattern = r"https://platzi\.com/cursos/([^/]+)/?"
     match = re.search(pattern, url)
@@ -44,15 +44,15 @@ def get_course_slug(url: str) -> str:
 
 def clean_string(text: str) -> str:
     """
-    Cleans the input string by removing special characters and
-    leading/trailing white spaces.
+    Remove special characters from a string and strip it.
 
-    Args:
-        text (str): The input string to be cleaned.
+    :param text(str): string to clean
+    :return str: cleaned string
 
-    Returns:
-        str: The cleaned string, with special characters removed and
-        leading/trailing spaces stripped.
+    Example
+    -------
+    >>> clean_string("   Hi:;<>?{}|"")
+    "Hi"
     """
     result = re.sub(r"[ºª\n\r]|[^\w\s]", "", text)
     return re.sub(r"\s+", " ", result).strip()
@@ -60,13 +60,16 @@ def clean_string(text: str) -> str:
 
 def slugify(text: str) -> str:
     """
-    Slugify a string by removing special characters and
-    leading/trailing white spaces, and replacing spaces with hyphens.
+    Slugify a string, removing special characters and replacing
+    spaces with hyphens.
 
-    Args:
-        text (str): The input string to be slugified.
-    Returns:
-        str: The slugified string.
+    :param text(str): string to convert
+    :return str: slugified string
+
+    Example
+    -------
+    >>> slugify(""Café! Frío?"")
+    "cafe-frio"
     """
     return unidecode(clean_string(text)).lower().replace(" ", "-")
 
