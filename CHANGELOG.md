@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## v0.6.0 (2025-04-12)
+
+### Feature
+
+* feat: add retry decorator ([`9d698c2`](https://github.com/ivansaul/platzi-downloader/commit/9d698c20d2f4061ecc470e8e0a0a0834a1373bcd))
+
+* feat: add overwrite option to download ([`c798e66`](https://github.com/ivansaul/platzi-downloader/commit/c798e669218311caa6670a8a2f54f0a25cbf3805))
+
+### Fix
+
+* fix: rename &#39;overrides&#39; to &#39;overwrite&#39; in download function ([`ad48422`](https://github.com/ivansaul/platzi-downloader/commit/ad48422a706884e25d0313b9c10fa3f98e3689ce))
+
+* fix: streaming URLs extraction in m3u8_dl ([`e937926`](https://github.com/ivansaul/platzi-downloader/commit/e937926859c2a285627e0e863a439259f3d0e2a5))
+
+* fix: rename &#39;overrides&#39; to &#39;overwrite&#39; in _ts_dl function ([`77bc241`](https://github.com/ivansaul/platzi-downloader/commit/77bc241e39820b8aab354c742f4ef080deccc7dc))
+
+* fix: ffmpeg check in decorator ([`5c507c4`](https://github.com/ivansaul/platzi-downloader/commit/5c507c4da760606a1bb6e15cd060ed837c2c1cb9))
+
+### Unknown
+
+* Merge pull request #23 from ivansaul/develop
+
+Add retry decorator and fix issues ([`5b5ae24`](https://github.com/ivansaul/platzi-downloader/commit/5b5ae24e497a19013004028aec41994791e36c16))
+
 ## v0.5.0 (2025-04-11)
 
 ### Documentation
