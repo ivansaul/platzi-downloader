@@ -28,9 +28,9 @@ def _hash_id(input: str) -> str:
 
 
 async def _ts_dl(url: str, path: Path, **kwargs):
-    overrides = kwargs.get("overrides", False)
+    overwrite = kwargs.get("overwrite", False)
 
-    if not overrides and path.exists():
+    if not overwrite and path.exists():
         return
 
     path.unlink(missing_ok=True)
