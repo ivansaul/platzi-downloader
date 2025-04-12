@@ -54,8 +54,8 @@ def clean_string(text: str) -> str:
         str: The cleaned string, with special characters removed and
         leading/trailing spaces stripped.
     """
-    pattern = r"[ºª]|[^\w\s]"
-    return re.sub(pattern, "", text).strip()
+    result = re.sub(r"[ºª\n\r]|[^\w\s]", "", text)
+    return re.sub(r"\s+", " ", result).strip()
 
 
 def slugify(text: str) -> str:
