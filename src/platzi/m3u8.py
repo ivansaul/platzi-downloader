@@ -11,15 +11,12 @@ import aiofiles
 import rnet
 from tqdm.asyncio import tqdm
 
-from .logger import Logger
-
 
 def ffmpeg_required(func):
     @functools.wraps(func)
     async def wrapper(*args, **kwargs):
         if not shutil.which("ffmpeg"):
-            Logger.error("ffmpeg is not installed")
-            return
+            raise Exception("ffmpeg is not installed")
         return await func(*args, **kwargs)
 
     return wrapper
@@ -160,6 +157,7 @@ async def _m3u8_dl(
         raise Exception("Error converting m3u8 to mp4")
 
 
+@ffmpeg_required
 async def m3u8_dl(
     url: str,
     path: str | Path,
