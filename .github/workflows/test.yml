@@ -49,6 +49,9 @@ jobs:
       - name: Lint with Ruff
         run: poetry run ruff check --output-format=github .
 
+      - name: Check Formatting with Ruff
+        run: poetry run ruff format --check .
+
       - name: Type Check with MyPy
         run: poetry run mypy --pretty --show-error-codes .
       
