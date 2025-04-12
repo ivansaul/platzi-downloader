@@ -90,7 +90,7 @@ def get_subtitles_url(content: str) -> str | None:
 
 
 async def download(url: str, path: Path, **kwargs):
-    overwrite = kwargs.get("overrides", False)
+    overwrite = kwargs.get("overwrite", False)
 
     if not overwrite and path.exists():
         return
