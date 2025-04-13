@@ -1,5 +1,35 @@
 # CHANGELOG
 
+## v0.6.1 (2025-04-13)
+
+### Chore
+
+* chore(ci): remove FFmpeg installation step from workflow ([`682dc2c`](https://github.com/ivansaul/platzi-downloader/commit/682dc2c22d90ba064adc3331d5ec88096b2a89d8))
+
+* chore(ci): remove Playwright install step from workflow ([`cb1658d`](https://github.com/ivansaul/platzi-downloader/commit/cb1658db3c4f0acbd2a23f67501b9e5d8584d755))
+
+* chore(ci): add formatting check step with Ruff in workflow ([`1cd28d7`](https://github.com/ivansaul/platzi-downloader/commit/1cd28d701d667533e0099203f4dcf4e05c1fc497))
+
+### Fix
+
+* fix: improve clean_string function to handle newlines and extra spaces ([`33e48ba`](https://github.com/ivansaul/platzi-downloader/commit/33e48ba5404fa277221e43013a8a41e0ed01e962))
+
+### Style
+
+* style: update docstrings for get_course_slug, clean_string, and slugify functions ([`400dfc2`](https://github.com/ivansaul/platzi-downloader/commit/400dfc2700e8a524d4d38c9d3ecb91734556b73c))
+
+### Test
+
+* test(utils): update test cases for clean_string and slugify functions
+
+Include special characters and newlines ([`2c50a4d`](https://github.com/ivansaul/platzi-downloader/commit/2c50a4d674c8413eadf9a8189720003538aef703))
+
+### Unknown
+
+* Merge pull request #25 from ivansaul/develop
+
+Improve clean_string for Newlines and Extra Spaces ([`c430bbb`](https://github.com/ivansaul/platzi-downloader/commit/c430bbb0dd35c741a757251266bba500840c66b0))
+
 ## v0.6.0 (2025-04-12)
 
 ### Feature
