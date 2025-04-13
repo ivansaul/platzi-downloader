@@ -29,11 +29,6 @@ jobs:
         shell: bash
         run: pipx install poetry
 
-      - name: Install FFmpeg
-        uses: AnimMouse/setup-ffmpeg@v1
-        with:
-          version: master
-      
       - name: Setup | Install Python
         uses: actions/setup-python@v5
         with:
