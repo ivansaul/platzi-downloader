@@ -98,15 +98,15 @@ OPTIONS:
 Ejemplos:
 
 ```console
-platzi download https://platzi.com/cursos/fastapi-2023
+platzi download https://platzi.com/cursos/python/
 ```
 
 ```console
-platzi download https://platzi.com/cursos/fastapi-2023 -w
+platzi download https://platzi.com/cursos/python/ -w
 ```
 
 ```console
-platzi download https://platzi.com/cursos/fastapi-2023 -q 720
+platzi download https://platzi.com/cursos/python/ -q 720
 ```
 
 ### Borrar Caché
