@@ -92,6 +92,7 @@ platzi download URL [OPTIONS]
 
 OPTIONS:
   --overwrite / -w  Overwrite files if exist.
+  --quality / -q  Specifies the video quality (default: max). Options: [1080|720].
 ```
 
 Ejemplos:
@@ -102,6 +103,10 @@ platzi download https://platzi.com/cursos/fastapi-2023
 
 ```console
 platzi download https://platzi.com/cursos/fastapi-2023 -w
+```
+
+```console
+platzi download https://platzi.com/cursos/fastapi-2023 -q 720
 ```
 
 ### Borrar Caché
