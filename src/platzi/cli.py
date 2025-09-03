@@ -40,6 +40,15 @@ def download(
             show_default=False,
         ),
     ],
+    quality: Annotated[  # --- NEW FEATURES: quality selection ---
+        str,
+        typer.Option(
+            "--quality",
+            "-q",
+            help="The quality of the video to download.",
+            show_default=True,
+        ),
+    ] = False,
     overwrite: Annotated[
         bool,
         typer.Option(
@@ -62,7 +71,7 @@ def download(
     Example:
         platzi download https://platzi.com/cursos/fastapi-2023/
     """
-    asyncio.run(_download(url, overwrite=overwrite))
+    asyncio.run(_download(url, quality=quality, overwrite=overwrite))
 
 
 @app.command()
