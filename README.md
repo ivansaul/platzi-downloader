@@ -19,6 +19,13 @@ Es una herramienta de línea de comandos para descargar cursos directamente desd
 </div>
 
 ---
+<div align="center">
+
+
+https://github.com/user-attachments/assets/94d956c4-d392-4a4e-b86e-7cd8092f865b
+
+
+</div>
 
 ## Instalación | Actualización
 
