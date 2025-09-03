@@ -4,9 +4,11 @@ from pathlib import Path
 
 import aiofiles
 import rnet
+
 from playwright.async_api import Page
 from unidecode import unidecode
-
+from .constants import HEADERS
+from .logger import Logger
 from .helpers import retry
 
 
@@ -81,18 +83,19 @@ def get_m3u8_url(content: str) -> str:
     if not matches:
         raise Exception("No m3u8 urls found")
 
-    return matches[0]
+    return matches[0] # retorna solo una url .m3u8 si hay varios iguales
 
 
-def get_subtitles_url(content: str) -> str | None:
+def get_subtitles_url(content: str) -> list[str] | None:
     pattern = r"https?://[^\s\"'}]+\.vtt"
-    matches = re.findall(pattern, content)
-
+    #matches = re.findall(pattern, content)
+    matches = list(set(re.findall(pattern, content))) # --- NEW FEATURES: list of subtitles ---
+    
     if not matches:
         return None
 
-    return matches[0]
-
+    return matches # retorna una lista con todos los subtitulos encontrados.
+    
 
 @retry()
 async def download(url: str, path: Path, **kwargs):
@@ -101,15 +104,19 @@ async def download(url: str, path: Path, **kwargs):
     if not overwrite and path.exists():
         return
 
-    path.unlink(missing_ok=True)
-    path.parent.mkdir(parents=True, exist_ok=True)
-
-    client = rnet.Client(impersonate=rnet.Impersonate.Firefox135)
-    response: rnet.Response = await client.get(url, **kwargs)
-
     try:
+        path.unlink(missing_ok=True)
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+        client = rnet.Client(impersonate=rnet.Impersonate.Firefox139)
+        response: rnet.Response = await client.get(url, allow_redirects=True, **kwargs)
+        
+        # print("Status Code: ", response.status)
+        # print("Headers: ", response.headers)
+        # print("Response URL: ", response.url)
+    
         if not response.ok:
-            raise Exception("[Bad Response]")
+            raise Exception(f"[Bad Response: {response.status}]")
 
         async with aiofiles.open(path, "wb") as file:
             async with response.stream() as streamer:
@@ -117,7 +124,25 @@ async def download(url: str, path: Path, **kwargs):
                     await file.write(chunk)
 
     except Exception as e:
-        raise Exception(f"Error downloading file: [{path.name}]") from e
+        # NO lanzar excepción — para no detener el script y continuar si falla la descarga
+        #raise Exception(f"Error downloading file: [{path.name}]") from e
+           
+        Logger.error(f"Downloading file {url} -> {path.name} | {e}")
+        
+        return
 
     finally:
         response.close()
+
+# --- NEW FEATURES: function download styles ---
+@retry()
+async def download_styles(url: str, **kwargs):
+    
+    client = rnet.Client(impersonate=rnet.Impersonate.Firefox139)
+    response: rnet.Response = await client.get(url, allow_redirects=True, **kwargs)
+        
+    # Guarda el contenido antes de cerrar
+    content = await response.text()
+    response.close()
+    
+    return content  # Devuelve el contenido de la hoja de estilo
