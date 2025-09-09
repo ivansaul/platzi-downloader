@@ -191,7 +191,11 @@ async def m3u8_dl(
     :param kwargs: Additional keyword arguments to pass to the requests client.
     :return: None
     """
-    # TODO: implement quality selection
+
+    # quality selection
+    quality = kwargs.get("quality", False)
+
+    quality = 0 if quality == '720' else 1
 
     overwrite = kwargs.get("overwrite", False)
     path = path if isinstance(path, Path) else Path(path)
@@ -206,15 +210,15 @@ async def m3u8_dl(
         if not response.ok:
             raise Exception("Error downloading m3u8")
 
-        m3u8_urls = _extract_streaming_urls(await response.text())
+        m3u8_urls = _extract_streaming_urls(await response.text())  # The .m3u8 link contains the video resolutions
 
         if not m3u8_urls:
             raise Exception("No m3u8 urls found")
 
-        await _m3u8_dl(m3u8_urls[0], path, **kwargs)
+        await _m3u8_dl(m3u8_urls[int(quality)], path, **kwargs)  # Here goes the video resolution [0]=1280; [1]=1920
 
     except Exception:
         raise
 
     finally:
-        response.close()
+        await response.close()
