@@ -91,17 +91,22 @@ Para descargar un curso de Platzi, usa el comando download seguido de la URL del
 platzi download URL [OPTIONS]
 
 OPTIONS:
+  --quality / -q  Specifies the video quality (default: max). Options: [1080|720].
   --overwrite / -w  Overwrite files if exist.
 ```
 
 Ejemplos:
 
 ```console
-platzi download https://platzi.com/cursos/fastapi-2023
+platzi download https://platzi.com/cursos/python
 ```
 
 ```console
-platzi download https://platzi.com/cursos/fastapi-2023 -w
+platzi download https://platzi.com/cursos/python/ -q 720
+```
+
+```console
+platzi download https://platzi.com/cursos/python -w
 ```
 
 ### Borrar Caché
