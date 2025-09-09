@@ -70,7 +70,7 @@ async def _ts_dl(url: str, path: Path, **kwargs):
         raise
 
     finally:
-        response.close()
+        await response.close()
 
 
 async def _worker_ts_dl(urls: list, dir: Path, **kwargs):
@@ -135,7 +135,7 @@ async def _m3u8_dl(
         raise
 
     finally:
-        response.close()
+        await response.close()
 
     ts_files = os.listdir(dir)
     ts_files = [ts for ts in ts_files if ts.endswith(".ts")]
