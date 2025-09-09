@@ -34,7 +34,7 @@ def _extract_streaming_urls(content: str) -> list[str] | None:
     pattern = r"(https?://[^\s]+|(?::)?///?[^\s]+)"
     matches = re.findall(pattern, content)
 
-    urls = []
+    urls = []  # save video resolutions
     for match in matches:
         if match.startswith("http"):
             urls.append(match)
@@ -54,7 +54,7 @@ async def _ts_dl(url: str, path: Path, **kwargs):
     path.unlink(missing_ok=True)
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    client = rnet.Client(impersonate=rnet.Impersonate.Firefox135)
+    client = rnet.Client(impersonate=rnet.Impersonate.Firefox139)
     response: rnet.Response = await client.get(url, **kwargs)
 
     try:
@@ -114,7 +114,7 @@ async def _m3u8_dl(
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp_dir.mkdir(parents=True, exist_ok=True)
 
-    client = rnet.Client(impersonate=rnet.Impersonate.Firefox135)
+    client = rnet.Client(impersonate=rnet.Impersonate.Firefox139)
     response: rnet.Response = await client.get(url, **kwargs)
 
     try:
@@ -198,7 +198,7 @@ async def m3u8_dl(
     if not overwrite and path.exists():
         return
 
-    client = rnet.Client(impersonate=rnet.Impersonate.Firefox135)
+    client = rnet.Client(impersonate=rnet.Impersonate.Firefox139)
     response: rnet.Response = await client.get(url, **kwargs)
 
     try:
