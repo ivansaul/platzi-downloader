@@ -84,14 +84,14 @@ def get_m3u8_url(content: str) -> str:
     return matches[0]
 
 
-def get_subtitles_url(content: str) -> str | None:
+def get_subtitles_url(content: str) -> list[str] | None:
     pattern = r"https?://[^\s\"'}]+\.vtt"
-    matches = re.findall(pattern, content)
+    matches = list(set(re.findall(pattern, content)))
 
     if not matches:
         return None
 
-    return matches[0]
+    return matches  # returns a list of all found subtitles without repeating
 
 
 @retry()
