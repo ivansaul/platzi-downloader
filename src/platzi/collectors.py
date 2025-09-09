@@ -10,7 +10,7 @@ from .utils import get_m3u8_url, get_subtitles_url, slugify
 
 @Cache.cache_async
 async def get_course_title(page: Page) -> str:
-    SELECTOR = ".CourseInfo_CourseInfo__Title__4Fwov"
+    SELECTOR = ".CourseHeader_CourseHeader__Title__yhjgH"
     EXCEPTION = Exception("No course title found")
     try:
         title = await page.locator(SELECTOR).first.text_content()
@@ -78,7 +78,7 @@ async def get_draft_chapters(page: Page) -> list[Chapter]:
 @Cache.cache_async
 async def get_unit(context: BrowserContext, url: str) -> Unit:
     TYPE_SELECTOR = ".VideoPlayer"
-    TITLE_SELECTOR = ".MaterialDesktopHeading_MaterialDesktopHeading-info__title__luzx8"
+    TITLE_SELECTOR = "h1.MaterialHeading_MaterialHeading__title__sDUKY"
     EXCEPTION = Exception("Could not collect unit data")
 
     if "/quiz/" in url:
