@@ -44,7 +44,7 @@ class Unit(BaseModel):
     url: str
     slug: str
     video: Video | None = None
-    resources: list[Resource] | None = None
+    resources: Resource | None = None
 
 
 class Chapter(BaseModel):
