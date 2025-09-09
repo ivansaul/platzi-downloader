@@ -124,3 +124,16 @@ async def download(url: str, path: Path, **kwargs):
 
     finally:
         await response.close()
+
+
+@retry()
+async def download_styles(url: str, **kwargs):
+
+    client = rnet.Client(impersonate=rnet.Impersonate.Firefox139)
+    response: rnet.Response = await client.get(url, allow_redirects=True, **kwargs)
+
+    content = await response.text()  # Save content before closing
+
+    await response.close()
+
+    return content
