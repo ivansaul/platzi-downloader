@@ -8,6 +8,7 @@ from playwright.async_api import Page
 from unidecode import unidecode
 
 from .helpers import retry
+from .logger import Logger
 
 
 async def progressive_scroll(
@@ -101,15 +102,15 @@ async def download(url: str, path: Path, **kwargs):
     if not overwrite and path.exists():
         return
 
-    path.unlink(missing_ok=True)
-    path.parent.mkdir(parents=True, exist_ok=True)
-
-    client = rnet.Client(impersonate=rnet.Impersonate.Firefox135)
-    response: rnet.Response = await client.get(url, **kwargs)
-
     try:
+        path.unlink(missing_ok=True)
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+        client = rnet.Client(impersonate=rnet.Impersonate.Firefox139)
+        response: rnet.Response = await client.get(url, allow_redirects=True, **kwargs)
+
         if not response.ok:
-            raise Exception("[Bad Response]")
+            raise Exception(f"[Bad Response: {response.status}]")
 
         async with aiofiles.open(path, "wb") as file:
             async with response.stream() as streamer:
@@ -117,7 +118,9 @@ async def download(url: str, path: Path, **kwargs):
                     await file.write(chunk)
 
     except Exception as e:
-        raise Exception(f"Error downloading file: [{path.name}]") from e
+        Logger.error(f"Downloading file {url} -> {path.name} | {e}")
+
+        return
 
     finally:
-        response.close()
+        await response.close()
