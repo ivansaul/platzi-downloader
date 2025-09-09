@@ -32,8 +32,9 @@ class Video(BaseModel):
 
 
 class Resource(BaseModel):
-    name: str
-    url: str
+    files_url: list
+    readings_url: list
+    summary: str
 
 
 class Unit(BaseModel):
