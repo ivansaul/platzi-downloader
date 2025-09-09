@@ -77,7 +77,8 @@ async def _worker_ts_dl(urls: list, dir: Path, **kwargs):
     BATCH_SIZE = 5
     IDX = 1
 
-    with tqdm(total=len(urls)) as bar:
+    bar_format = "{desc} |{bar}|{percentage:3.0f}% [{n_fmt}/{total_fmt} fragments] [{elapsed}<{remaining}, {rate_fmt}{postfix}]"
+    with tqdm(total=len(urls), desc="Progress", colour='green', bar_format=bar_format, ascii='░█') as bar:
         for i in range(0, len(urls), BATCH_SIZE):
             urls_batch = urls[i : i + BATCH_SIZE]
             tasks = []
