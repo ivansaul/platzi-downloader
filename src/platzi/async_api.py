@@ -1,6 +1,7 @@
 import functools
 import json
 from pathlib import Path
+from urllib.parse import unquote, urlparse
 
 import aiofiles
 from playwright.async_api import BrowserContext, Page, async_playwright
@@ -11,7 +12,14 @@ from .helpers import read_json, write_json
 from .logger import Logger
 from .m3u8 import m3u8_dl
 from .models import TypeUnit, User
-from .utils import download, progressive_scroll, slugify
+from .utils import clean_string, download, progressive_scroll, slugify
+
+from rich import print
+from rich.console import Console
+from rich.table import Table
+from rich import box
+import time
+from rich.live import Live
 
 
 def login_required(func):
@@ -95,7 +103,7 @@ class AsyncPlatzi:
 
         if self.user.is_authenticated:
             self.loggedin = True
-            Logger.info(f"Hi, {self.user.username}!")
+            Logger.info(f"Hi, {self.user.username}!\n")
 
     @try_except_request
     async def login(self) -> None:
@@ -131,10 +139,10 @@ class AsyncPlatzi:
 
         # course title
         course_title = await get_course_title(page)
-        Logger.print(course_title, "[COURSE]")
+        # Logger.print(course_title, "[COURSE]")
 
         # download directory
-        DL_DIR = Path("Platzi") / slugify(course_title)
+        DL_DIR = Path("Courses") / clean_string(course_title)
         DL_DIR.mkdir(parents=True, exist_ok=True)
 
         # save page as mhtml
