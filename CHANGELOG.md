@@ -1,5 +1,71 @@
 # CHANGELOG
 
+## v0.7.0 (2025-09-24)
+
+### Chore
+
+* chore: add new entries to .gitignore ([`3a73134`](https://github.com/ivansaul/platzi-downloader/commit/3a7313476f66f27029a93a946700b1ac13c9b7bb))
+
+* chore: downloads folder was renamed ([`ef27357`](https://github.com/ivansaul/platzi-downloader/commit/ef2735761d8698a53e3214225d5e1c8c2d494a84))
+
+* chore: add await to remove warning about unexecuted coroutine ([`392f70e`](https://github.com/ivansaul/platzi-downloader/commit/392f70e2961ba0af085fd1392998e02ba44b1bbc))
+
+* chore: update USER_AGENT to Firefox for compatibility ([`b8d7332`](https://github.com/ivansaul/platzi-downloader/commit/b8d73320bdc75949eb63f8bc96dd078b7f4e457f))
+
+* chore: update rnet.Client impersonation to Firefox139 ([`2cb1953`](https://github.com/ivansaul/platzi-downloader/commit/2cb1953b195f33ac032e1726bff67f51912dca97))
+
+* chore: update all dependencies ([`b5b4b20`](https://github.com/ivansaul/platzi-downloader/commit/b5b4b20508c36a326daa2116182bee77e1e58e5a))
+
+* chore(deps): replace deprecated &#39;rnet 2.2.1&#39; with &#39;rnet 2.4.2&#39; ([`6bb3b02`](https://github.com/ivansaul/platzi-downloader/commit/6bb3b02dff19d88ed5edc3dc69651076419bf89f))
+
+### Documentation
+
+* docs: update usage examples ([`f76ebf7`](https://github.com/ivansaul/platzi-downloader/commit/f76ebf79b839b69cc0f5c8f2603c832e0d9a1139))
+
+### Feature
+
+* feat: add logic for downloading resources and summary ([`56c02dc`](https://github.com/ivansaul/platzi-downloader/commit/56c02dc2e95807995fe2a96c503ed2d70a2f1c57))
+
+* feat: add resource and summary search ([`79ca376`](https://github.com/ivansaul/platzi-downloader/commit/79ca376735d28be4ba935f0fdba4a718e6f8420c))
+
+* feat: add quality option to download ([`d5cb258`](https://github.com/ivansaul/platzi-downloader/commit/d5cb2587163c03afd5d12fe9f74633b04d9b530e))
+
+* feat: add quality selection ([`78d1b06`](https://github.com/ivansaul/platzi-downloader/commit/78d1b0694848145e6bd917523f6953622f83a295))
+
+* feat: add download_styles function for downloading and returning remote stylesheets ([`288892b`](https://github.com/ivansaul/platzi-downloader/commit/288892b9548aa38e246c27fc42a9f7f1a745c1ed))
+
+### Fix
+
+* fix: update title selector for Unit data collection ([`663f1d2`](https://github.com/ivansaul/platzi-downloader/commit/663f1d22102f066afb656a647824f78e913352e9))
+
+### Refactor
+
+* refactor: simplify lecture/video detection with early return and html template modified ([`65dc8d1`](https://github.com/ivansaul/platzi-downloader/commit/65dc8d1b61fdc50c219496b345c7c0e2b9c5e844))
+
+* refactor: use ternary expression for subtitle language detection ([`d62792a`](https://github.com/ivansaul/platzi-downloader/commit/d62792a69832403ad630214220625fdc399585e7))
+
+* refactor: change resources from list[Resource] to single Resource ([`ff6f2cb`](https://github.com/ivansaul/platzi-downloader/commit/ff6f2cb3340becae593887b3e70c639474b91a5d))
+
+* refactor: Resource model with new structure ([`dcd2bf2`](https://github.com/ivansaul/platzi-downloader/commit/dcd2bf2b0a8b2b60ca60d00c82a5c2ed0f7e3212))
+
+* refactor: change subtitles_url from str to list[str] ([`2b3bb04`](https://github.com/ivansaul/platzi-downloader/commit/2b3bb04bdb6681acba58aca4ca14dd7e7150c098))
+
+* refactor: better error handling, improved HTTP client with updated impersonation and redirect support ([`33fd7f6`](https://github.com/ivansaul/platzi-downloader/commit/33fd7f66e73fe62faa81a689dc3db84a46390f48))
+
+* refactor: change get_subtitles_url return type from str to list ([`d228d6d`](https://github.com/ivansaul/platzi-downloader/commit/d228d6d648ed4f392cb5baa53fa0f8a20f4ca047))
+
+### Style
+
+* style: add course details table ([`4b81154`](https://github.com/ivansaul/platzi-downloader/commit/4b81154f1cb10ebe7b9333ba35ab91fc26b9d9de))
+
+* style: update progress bar format for improved clarity ([`3011e90`](https://github.com/ivansaul/platzi-downloader/commit/3011e9085705573536f2f7d4af65f5d4b3cf8d33))
+
+### Unknown
+
+* Merge pull request #30 from alpha-drm/master
+
+feat: add resource downloads, subtitles, and video quality selection ([`066b73f`](https://github.com/ivansaul/platzi-downloader/commit/066b73f0eb4d2bcb46fae21cbf2f8caed3bd4518))
+
 ## v0.6.1 (2025-04-13)
 
 ### Chore
