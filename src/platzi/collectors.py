@@ -108,10 +108,13 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
         if not title:
             raise EXCEPTION
 
-        if await page.locator(TYPE_SELECTOR).count() == 0:
-            type = TypeUnit.LECTURE
-            video = None
-
+        if not await page.locator(TYPE_SELECTOR).is_visible():
+            return Unit(
+                url=url,
+                title=title,
+                type=TypeUnit.LECTURE,
+                slug=slugify(title)
+            )
         else:
             content = await page.content()
             type = TypeUnit.VIDEO
@@ -184,18 +187,22 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
 
             # HTML template for the summary
             html_summary = f"""
-            <!DOCTYPE html>
-            <html lang="es" class="__variable_ce9353">
+           <!DOCTYPE html>
+            <html lang="es">
             <head>
                 <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>{title}</title>
                 <style>{styles}</style>
             </head>
-            <body class="__className_ce9353">
-                {summary_section}
+            <body>
+                <div class="Layout_Layout__s8xxr">
+                    <main class="Layout_Layout-main__FbmEd">
+                        {summary_section}
+                    </main>
+                </div>
             </body>
-            </html>
-            """
+            </html>"""
 
         return Unit(
             url=url,
