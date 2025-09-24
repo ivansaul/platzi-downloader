@@ -151,15 +151,19 @@ class AsyncPlatzi:
         draft_chapters = await get_draft_chapters(page)
 
         # --- Course Details Table ---
-        total = sum(len(section.units) for section in draft_chapters)
         table = Table(title=course_title, caption="processing...", caption_style="green", title_style="green", header_style="green", footer_style="green", show_footer=True, box=box.SQUARE_DOUBLE_HEAD)
-        table.add_column("Secciones", style="green", footer="Total", no_wrap=True)
-        table.add_column("Nº Lecciones", style="green", footer=str(total), justify="center")
+        table.add_column("Sections", style="green", footer="Total", no_wrap=True)
+        table.add_column("Lessons", style="green", footer="0", justify="center")
+
+        total_units = 0
 
         with Live(table, refresh_per_second=4):  # update 4 times a second to feel fluid
             for idx, section in enumerate(draft_chapters, 1):
                 time.sleep(0.3)  # arbitrary delay
+                num_units = len(section.units)
+                total_units += num_units
                 table.add_row(f"{idx}-{section.name}", str(len(section.units)))
+                table.columns[1].footer = str(total_units)  # Update footer dynamically
 
         for idx, draft_chapter in enumerate(draft_chapters, 1):
             Logger.info(f"Creating directory: {draft_chapter.name}")
@@ -182,14 +186,7 @@ class AsyncPlatzi:
                     subs = unit.video.subtitles_url
                     if subs:
                         for sub in subs:
-                            if "ES" in sub:
-                                lang = "_es"
-                            elif "EN" in sub:
-                                lang = "_en"
-                            elif "PT" in sub:
-                                lang = "_pt"
-                            else:
-                                lang = ''
+                            lang = "_es" if "ES" in sub else "_en" if "EN" in sub else "_pt" if "PT" in sub else ""
 
                             dst = CHAP_DIR / f"{file_name}{lang}.vtt"
                             Logger.print(f"[{dst.name}]", "[DOWNLOADING-SUBS]")
