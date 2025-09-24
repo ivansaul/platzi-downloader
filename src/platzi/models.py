@@ -28,12 +28,13 @@ class TypeUnit(str, Enum):
 class Video(BaseModel):
     id: int | None = None
     url: str
-    subtitles_url: str | None = None
+    subtitles_url: list[str] | None = None
 
 
 class Resource(BaseModel):
-    name: str
-    url: str
+    files_url: list
+    readings_url: list
+    summary: str
 
 
 class Unit(BaseModel):
@@ -43,7 +44,7 @@ class Unit(BaseModel):
     url: str
     slug: str
     video: Video | None = None
-    resources: list[Resource] | None = None
+    resources: Resource | None = None
 
 
 class Chapter(BaseModel):

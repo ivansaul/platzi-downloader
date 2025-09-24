@@ -1,9 +1,15 @@
 import functools
 import json
+import os
+import time
 from pathlib import Path
+from urllib.parse import unquote
 
 import aiofiles
 from playwright.async_api import BrowserContext, Page, async_playwright
+from rich import box, print
+from rich.live import Live
+from rich.table import Table
 
 from .collectors import get_course_title, get_draft_chapters, get_unit
 from .constants import HEADERS, LOGIN_DETAILS_URL, LOGIN_URL, SESSION_FILE
@@ -11,7 +17,7 @@ from .helpers import read_json, write_json
 from .logger import Logger
 from .m3u8 import m3u8_dl
 from .models import TypeUnit, User
-from .utils import download, progressive_scroll, slugify
+from .utils import clean_string, download, progressive_scroll
 
 
 def login_required(func):
@@ -95,7 +101,7 @@ class AsyncPlatzi:
 
         if self.user.is_authenticated:
             self.loggedin = True
-            Logger.info(f"Hi, {self.user.username}!")
+            Logger.info(f"Hi, {self.user.username}!\n")
 
     @try_except_request
     async def login(self) -> None:
@@ -131,10 +137,10 @@ class AsyncPlatzi:
 
         # course title
         course_title = await get_course_title(page)
-        Logger.print(course_title, "[COURSE]")
+        # Logger.print(course_title, "[COURSE]")
 
         # download directory
-        DL_DIR = Path("Platzi") / slugify(course_title)
+        DL_DIR = Path("Courses") / clean_string(course_title)
         DL_DIR.mkdir(parents=True, exist_ok=True)
 
         # save page as mhtml
@@ -143,39 +149,87 @@ class AsyncPlatzi:
 
         # iterate over chapters
         draft_chapters = await get_draft_chapters(page)
-        for idx, draft_chapter in enumerate(draft_chapters, 1):
-            Logger.info(f"Downloading {draft_chapter.name}")
 
-            CHAP_DIR = DL_DIR / f"{idx:02}_{draft_chapter.slug}"
+        # --- Course Details Table ---
+        table = Table(title=course_title, caption="processing...", caption_style="green", title_style="green", header_style="green", footer_style="green", show_footer=True, box=box.SQUARE_DOUBLE_HEAD)
+        table.add_column("Sections", style="green", footer="Total", no_wrap=True)
+        table.add_column("Lessons", style="green", footer="0", justify="center")
+
+        total_units = 0
+
+        with Live(table, refresh_per_second=4):  # update 4 times a second to feel fluid
+            for idx, section in enumerate(draft_chapters, 1):
+                time.sleep(0.3)  # arbitrary delay
+                num_units = len(section.units)
+                total_units += num_units
+                table.add_row(f"{idx}-{section.name}", str(len(section.units)))
+                table.columns[1].footer = str(total_units)  # Update footer dynamically
+
+        for idx, draft_chapter in enumerate(draft_chapters, 1):
+            Logger.info(f"Creating directory: {draft_chapter.name}")
+
+            CHAP_DIR = DL_DIR / f"{idx:02}-{clean_string(draft_chapter.name)}"
             CHAP_DIR.mkdir(parents=True, exist_ok=True)
 
             # iterate over units
             for jdx, draft_unit in enumerate(draft_chapter.units, 1):
                 unit = await get_unit(self.context, draft_unit.url)
-
-                file_name = f"{jdx:02}_{unit.slug}"
+                file_name = f"{jdx:02}-{clean_string(unit.title)}"
 
                 # download video
                 if unit.video:
                     dst = CHAP_DIR / f"{file_name}.mp4"
-                    Logger.print(f"[{dst.name}]", "[DOWNLOADING]")
+                    Logger.print(f"[{dst.name}]", "[DOWNLOADING-VIDEO]")
                     await m3u8_dl(unit.video.url, dst, headers=HEADERS, **kwargs)
 
-                    if unit.video.subtitles_url:
-                        dst = CHAP_DIR / f"{file_name}.vtt"
-                        Logger.print(f"[{dst.name}]", "[DOWNLOADING]")
-                        await download(unit.video.subtitles_url, dst, **kwargs)
+                    # download subtitles
+                    subs = unit.video.subtitles_url
+                    if subs:
+                        for sub in subs:
+                            lang = "_es" if "ES" in sub else "_en" if "EN" in sub else "_pt" if "PT" in sub else ""
+
+                            dst = CHAP_DIR / f"{file_name}{lang}.vtt"
+                            Logger.print(f"[{dst.name}]", "[DOWNLOADING-SUBS]")
+                            await download(sub, dst, **kwargs)
+
+                    # download resources
+                    if unit.resources:
+                        # download files
+                        files = unit.resources.files_url
+                        if files:
+                            for archive in files:
+                                file_name = unquote(os.path.basename(archive))
+                                dst = CHAP_DIR / f"{jdx:02}-{file_name}"
+                                Logger.print(f"[{dst.name}]", "[DOWNLOADING-FILES]")
+                                await download(archive, dst)
+
+                        # download readings
+                        readings = unit.resources.readings_url
+                        if readings:
+                            dst = CHAP_DIR / f"{jdx:02}-Lecturas recomendadas.txt"
+                            Logger.print(f"[{dst.name}]", "[SAVING-READINGS]")
+                            with open(dst, 'w', encoding='utf-8') as f:
+                                for lecture in readings:
+                                    f.write(lecture + "\n")
+
+                        # download summary
+                        summary = unit.resources.summary
+                        if summary:
+                            dst = CHAP_DIR / f"{jdx:02}-Resumen.html"
+                            Logger.print(f"[{dst.name}]", "[SAVING-SUMMARY]")
+                            with open(dst, 'w', encoding='utf-8') as f:
+                                f.write(summary)
 
                 # download lecture
                 if unit.type == TypeUnit.LECTURE:
                     dst = CHAP_DIR / f"{file_name}.mhtml"
-                    Logger.print(f"[{dst.name}]", "[DOWNLOADING]")
+                    Logger.print(f"[{dst.name}]", "[DOWNLOADING-LECTURE]")
                     await self.save_page(unit.url, path=dst)
 
                 # download quiz
                 if unit.type == TypeUnit.QUIZ:
                     dst = CHAP_DIR / f"{file_name}.mhtml"
-                    Logger.print(f"[{dst.name}]", "[DOWNLOADING]")
+                    Logger.print(f"[{dst.name}]", "[DOWNLOADING-QUIZ]")
                     await self.save_page(unit.url, path=dst)
 
             print("=" * 100)

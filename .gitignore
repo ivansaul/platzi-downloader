@@ -3,6 +3,7 @@
 *.json
 bin/
 downloads/
+Courses/
 .tmp/
 *.mp4
 *.ts
