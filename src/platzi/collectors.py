@@ -97,6 +97,7 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
             slug="Quiz",
         )
 
+    page = None
     try:
         page = await context.new_page()
         await page.goto(url)
@@ -113,17 +114,20 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
                 url=url,
                 title=title,
                 type=TypeUnit.LECTURE,
-                slug=slugify(title)
-            )
-        else:
-            content = await page.content()
-            type = TypeUnit.VIDEO
-            video = Video(
-                url=get_m3u8_url(content),
-                subtitles_url=get_subtitles_url(content),
+                slug=slugify(title),
             )
 
+        # It's a video unit
+        content = await page.content()
+        unit_type = TypeUnit.VIDEO
+        video = Video(
+            url=get_m3u8_url(content),
+            subtitles_url=get_subtitles_url(content),
+        )
+
         # --- Get resources and summary---
+        html_summary = None
+
         files_section = page.locator(SECTION_FILES)
         next_sibling_files = files_section.locator(SIBLINGS)
 
@@ -132,20 +136,20 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
 
         download_all_button = page.locator(BUTTON_DOWNLOAD_ALL)
 
-        file_links = []
-        readings_links = []
+        file_links: list[str] = []
+        readings_links: list[str] = []
 
         # Get "Archivos de la clase" if the section exists
         if await next_sibling_files.count() > 0:
             enlaces = next_sibling_files.locator(SECTION_LINKS)
             for i in range(await enlaces.count()):
-                link = await enlaces.nth(i).get_attribute('href')
+                link = await enlaces.nth(i).get_attribute("href")
                 if link:
                     file_links.append(link)
 
         # Get link of the download all button if it exists
         if await download_all_button.count() > 0:
-            link = await download_all_button.get_attribute('href')
+            link = await download_all_button.get_attribute("href")
             if link:
                 file_links.append(link)
 
@@ -153,15 +157,14 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
         if await next_sibling_reading.count() > 0:
             enlaces = next_sibling_reading.locator(SECTION_LINKS)
             for i in range(await enlaces.count()):
-                link = await enlaces.nth(i).get_attribute('href')
+                link = await enlaces.nth(i).get_attribute("href")
                 if link:
                     readings_links.append(link)
 
         # Get summary if it exists
         summary = page.locator(SUMMARY_CONTENT_SELECTOR)
         if await summary.count() > 0:
-
-            all_css_styles = []
+            all_css_styles: list[str] = []
 
             # Get the HTML structure of the summary
             summary_section = await summary.evaluate("el => el.outerHTML")
@@ -170,7 +173,6 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
             stylesheet_links = page.locator("link[rel=stylesheet]")
             count = await stylesheet_links.count()
             for i in range(count):
-
                 href = await stylesheet_links.nth(i).get_attribute("href")
                 if href:
                     stylesheet = await download_styles(href)
@@ -207,18 +209,19 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
         return Unit(
             url=url,
             title=title,
-            type=type,
+            type=unit_type,
             video=video,
             slug=slugify(title),
             resources=Resource(
                 files_url=file_links,
                 readings_url=readings_links,
-                summary=html_summary
-            )
+                summary=html_summary,
+            ),
         )
 
-    except Exception:
-        raise EXCEPTION
+    except Exception as e:
+        raise EXCEPTION from e
 
     finally:
-        await page.close()
+        if page:
+            await page.close()

@@ -1,0 +1,19 @@
+# Runtime dependencies pinned to versions from poetry.lock
+# Generated for environments where using pip + requirements.txt is preferred.
+aiofiles==24.1.0
+platformdirs==4.4.0
+pydantic==2.11.7
+pyhumps==3.8.0
+pytest-playwright==0.5.2
+rnet==2.4.2
+tqdm==4.67.1
+typer==0.13.1
+unidecode==1.4.0
+
+# Transitive dependencies that are critical (direct runtime deps of above)
+annotated-types==0.7.0
+pydantic-core==2.33.2
+typing-extensions==4.15.0
+typing-inspection==0.4.1
+rich>=10.11.0  # required by typer (left unpinned minor to allow security updates)
+click>=8.0.0   # required by typer (same rationale)
