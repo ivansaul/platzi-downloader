@@ -1,7 +1,7 @@
 from enum import Enum
 
 from humps import camelize
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from pydantic.config import ConfigDict
 
 
@@ -32,9 +32,9 @@ class Video(BaseModel):
 
 
 class Resource(BaseModel):
-    files_url: list
-    readings_url: list
-    summary: str
+    files_url: list[str] = Field(default_factory=list)
+    readings_url: list[str] = Field(default_factory=list)
+    summary: str | None = None
 
 
 class Unit(BaseModel):
