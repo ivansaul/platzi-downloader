@@ -1,0 +1,14 @@
+# Development/testing/linting dependencies (superset of requirements.txt)
+-r requirements.txt
+
+# Dev tools pinned from poetry.lock
+pytest==8.4.2
+ruff==0.7.4
+ipykernel==6.29.5
+python-semantic-release==9.14.0
+mypy==1.13.0
+types-aiofiles==24.1.0.20250822
+
+# Extras sometimes useful (mirroring typical extras used indirectly)
+# playwright is an indirect dependency via pytest-playwright, include for convenience
+playwright>=1.18
