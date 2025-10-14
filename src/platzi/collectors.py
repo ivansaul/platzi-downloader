@@ -10,7 +10,7 @@ from .utils import download_styles, get_m3u8_url, get_subtitles_url, slugify
 
 @Cache.cache_async
 async def get_course_title(page: Page) -> str:
-    SELECTOR = ".CourseHeader_CourseHeader__Title__yhjgH"
+    SELECTOR = 'h1[class*="CourseHeader"]'
     EXCEPTION = Exception("No course title found")
     try:
         title = await page.locator(SELECTOR).first.text_content()
@@ -25,7 +25,7 @@ async def get_course_title(page: Page) -> str:
 
 @Cache.cache_async
 async def get_draft_chapters(page: Page) -> list[Chapter]:
-    SELECTOR = ".Syllabus_Syllabus__bVYL_ article"
+    SELECTOR = 'section[class*="Syllabus"] article'
     EXCEPTION = Exception("No sections found")
     try:
         locator = page.locator(SELECTOR)
@@ -38,7 +38,7 @@ async def get_draft_chapters(page: Page) -> list[Chapter]:
                 raise EXCEPTION
 
             block_list_locator = locator.nth(i).locator(
-                ".SyllabusSection_SyllabusSection__Materials__C2hlu a"
+                'a[class*="ItemLink"]'
             )
 
             units: list[Unit] = []
@@ -78,16 +78,18 @@ async def get_draft_chapters(page: Page) -> list[Chapter]:
 @Cache.cache_async
 async def get_unit(context: BrowserContext, url: str) -> Unit:
     TYPE_SELECTOR = ".VideoPlayer"
-    TITLE_SELECTOR = "h1.MaterialHeading_MaterialHeading__title__sDUKY"
+    TITLE_SELECTOR = "h1[class*='MaterialHeading']"
     EXCEPTION = Exception("Could not collect unit data")
 
     # --- NEW CONSTANTS ----
     SECTION_FILES = '//h4[normalize-space(text())="Archivos de la clase"]'
     SECTION_READING = '//h4[normalize-space(text())="Lecturas recomendadas"]'
-    SECTION_LINKS = 'a.FilesAndLinks_Item__fR7g4'
-    BUTTON_DOWNLOAD_ALL = 'a.FilesTree_FilesTree__Download__nGUsL'
-    SUMMARY_CONTENT_SELECTOR = 'div.Resources_Resources__Articlass__00D6l'
+    SECTION_LINKS = 'a[class*="FilesAndLinks_Item"]'
+    BUTTON_DOWNLOAD_ALL = 'a[class*="FilesTree__Download"][href][download]'
+    SUMMARY_CONTENT_SELECTOR = 'div[class*="Resources_Resources__Articlass--expanded"]'
     SIBLINGS = '//following-sibling::ul[1]'
+    LAYOUT_CONTAINER = 'div[class*="Layout_Layout__"]'
+    MAIN_LAYOUT = 'main[class*="Layout_Layout-main"]'
 
     if "/quiz/" in url:
         return Unit(
@@ -125,7 +127,7 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
             subtitles_url=get_subtitles_url(content),
         )
 
-        # --- Get resources and summary---
+        # --- Get resources and summary ---
         html_summary = None
 
         files_section = page.locator(SECTION_FILES)
@@ -166,6 +168,14 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
         if await summary.count() > 0:
             all_css_styles: list[str] = []
 
+            layout_container = await page.query_selector(LAYOUT_CONTAINER)
+            if layout_container:
+                class_container = await layout_container.get_attribute("class")
+
+            main_layout = await page.query_selector(MAIN_LAYOUT)
+            if main_layout:
+                class_main = await main_layout.get_attribute("class")
+
             # Get the HTML structure of the summary
             summary_section = await summary.evaluate("el => el.outerHTML")
 
@@ -198,8 +208,8 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
                 <style>{styles}</style>
             </head>
             <body>
-                <div class="Layout_Layout__s8xxr">
-                    <main class="Layout_Layout-main__FbmEd">
+                <div class={class_container}>
+                    <main class={class_main}>
                         {summary_section}
                     </main>
                 </div>
