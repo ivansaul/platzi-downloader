@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## v0.7.1 (2025-10-16)
+
+### Fix
+
+* fix(selectors): update selectors to prevent breakage on class hash changes ([`211970d`](https://github.com/ivansaul/platzi-downloader/commit/211970d857bb0bd6b9e9a97bc0765db0b5546da1))
+
+### Refactor
+
+* refactor: improve data models by adding default factories for lists and an optional summary field. Fix the error: &#34;ERROR: Could not collect unit data ([`73b30d5`](https://github.com/ivansaul/platzi-downloader/commit/73b30d596ac43494e9dd5ead5c58b1e48d4b6e86))
+
+### Unknown
+
+* Merge pull request #34 from alpha-drm/master ([`ccbdcaa`](https://github.com/ivansaul/platzi-downloader/commit/ccbdcaa4207a4d9d6eb69f4ea1bd6e46a5b26fe2))
+
+* Merge pull request #31 from FlacoAfk/master
+
+refactor: improve data models by adding default factories for lists and an optional summary field. ([`6d3f966`](https://github.com/ivansaul/platzi-downloader/commit/6d3f966e6f8ecb2387f138eb2d3c41f1bf69242b))
+
 ## v0.7.0 (2025-09-24)
 
 ### Chore
