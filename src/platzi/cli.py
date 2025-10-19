@@ -40,6 +40,8 @@ def download(
             show_default=False,
         ),
     ],
+    # TODO: Define a Quality enum (e.g. 360p, 720p, 1080p,...)
+    # and use it here instead of str
     quality: Annotated[
         str,
         typer.Option(
@@ -48,7 +50,7 @@ def download(
             help="The quality of the video to download.",
             show_default=True,
         ),
-    ] = False,
+    ] = "720",
     overwrite: Annotated[
         bool,
         typer.Option(

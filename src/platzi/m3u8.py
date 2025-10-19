@@ -193,7 +193,7 @@ async def m3u8_dl(
     """
 
     # quality selection
-    quality = kwargs.get("quality", False)
+    quality = kwargs.get("quality", "720")
 
     quality = 0 if quality == '720' else 1
 
