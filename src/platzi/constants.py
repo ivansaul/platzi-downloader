@@ -14,7 +14,9 @@ PLATZI_URL = "https://platzi.com"
 REFERER = "https://platzi.com/"
 
 # FIREFOX
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0"
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0"
+)
 
 HEADERS = {
     "User-Agent": USER_AGENT,
