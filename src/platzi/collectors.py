@@ -10,7 +10,7 @@ from .utils import download_styles, get_m3u8_url, get_subtitles_url, slugify
 
 @Cache.cache_async
 async def get_course_title(page: Page) -> str:
-    SELECTOR = 'h1[class*="CourseHeader"]'
+    SELECTOR = "h1[class*='CourseHeader']"
     EXCEPTION = Exception("No course title found")
     try:
         title = await page.locator(SELECTOR).first.text_content()
@@ -25,7 +25,7 @@ async def get_course_title(page: Page) -> str:
 
 @Cache.cache_async
 async def get_draft_chapters(page: Page) -> list[Chapter]:
-    SELECTOR = 'section[class*="Syllabus"] article'
+    SELECTOR = "section[class*='Syllabus'] article"
     EXCEPTION = Exception("No sections found")
     try:
         locator = page.locator(SELECTOR)
@@ -37,9 +37,7 @@ async def get_draft_chapters(page: Page) -> list[Chapter]:
             if not chapter_name:
                 raise EXCEPTION
 
-            block_list_locator = locator.nth(i).locator(
-                'a[class*="ItemLink"]'
-            )
+            block_list_locator = locator.nth(i).locator("a[class*='ItemLink']")
 
             units: list[Unit] = []
             for j in range(await block_list_locator.count()):
@@ -82,14 +80,14 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
     EXCEPTION = Exception("Could not collect unit data")
 
     # --- NEW CONSTANTS ----
-    SECTION_FILES = '//h4[normalize-space(text())="Archivos de la clase"]'
-    SECTION_READING = '//h4[normalize-space(text())="Lecturas recomendadas"]'
-    SECTION_LINKS = 'a[class*="FilesAndLinks_Item"]'
-    BUTTON_DOWNLOAD_ALL = 'a[class*="FilesTree__Download"][href][download]'
-    SUMMARY_CONTENT_SELECTOR = 'div[class*="Resources_Resources__Articlass--expanded"]'
-    SIBLINGS = '//following-sibling::ul[1]'
-    LAYOUT_CONTAINER = 'div[class*="Layout_Layout__"]'
-    MAIN_LAYOUT = 'main[class*="Layout_Layout-main"]'
+    SECTION_FILES = "//h4[normalize-space(text())='Archivos de la clase']"
+    SECTION_READING = "//h4[normalize-space(text())='Lecturas recomendadas']"
+    SECTION_LINKS = "a[class*='FilesAndLinks_Item']"
+    BUTTON_DOWNLOAD_ALL = "a[class*='FilesTree__Download'][href][download]"
+    SUMMARY_CONTENT_SELECTOR = "div[class*='Resources_Resources__Articlass--expanded']"
+    SIBLINGS = "//following-sibling::ul[1]"
+    LAYOUT_CONTAINER = "div[class*='Layout_Layout__']"
+    MAIN_LAYOUT = "main[class*='Layout_Layout-main']"
 
     if "/quiz/" in url:
         return Unit(
