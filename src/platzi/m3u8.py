@@ -78,7 +78,13 @@ async def _worker_ts_dl(urls: list, dir: Path, **kwargs):
     IDX = 1
 
     bar_format = "{desc} |{bar}|{percentage:3.0f}% [{n_fmt}/{total_fmt} fragments] [{elapsed}<{remaining}, {rate_fmt}{postfix}]"
-    with tqdm(total=len(urls), desc="Progress", colour='green', bar_format=bar_format, ascii='░█') as bar:
+    with tqdm(
+        total=len(urls),
+        desc="Progress",
+        colour="green",
+        bar_format=bar_format,
+        ascii="░█",
+    ) as bar:
         for i in range(0, len(urls), BATCH_SIZE):
             urls_batch = urls[i : i + BATCH_SIZE]
             tasks = []
@@ -195,7 +201,7 @@ async def m3u8_dl(
     # quality selection
     quality = kwargs.get("quality", "720")
 
-    quality = 0 if quality == '720' else 1
+    quality = 0 if quality == "720" else 1
 
     overwrite = kwargs.get("overwrite", False)
     path = path if isinstance(path, Path) else Path(path)
@@ -210,12 +216,16 @@ async def m3u8_dl(
         if not response.ok:
             raise Exception("Error downloading m3u8")
 
-        m3u8_urls = _extract_streaming_urls(await response.text())  # The .m3u8 link contains the video resolutions
+        m3u8_urls = _extract_streaming_urls(
+            await response.text()
+        )  # The .m3u8 link contains the video resolutions
 
         if not m3u8_urls:
             raise Exception("No m3u8 urls found")
 
-        await _m3u8_dl(m3u8_urls[int(quality)], path, **kwargs)  # Here goes the video resolution [0]=1280; [1]=1920
+        await _m3u8_dl(
+            m3u8_urls[int(quality)], path, **kwargs
+        )  # Here goes the video resolution [0]=1280; [1]=1920
 
     except Exception:
         raise

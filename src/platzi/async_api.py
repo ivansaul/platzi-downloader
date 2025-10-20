@@ -151,7 +151,16 @@ class AsyncPlatzi:
         draft_chapters = await get_draft_chapters(page)
 
         # --- Course Details Table ---
-        table = Table(title=course_title, caption="processing...", caption_style="green", title_style="green", header_style="green", footer_style="green", show_footer=True, box=box.SQUARE_DOUBLE_HEAD)
+        table = Table(
+            title=course_title,
+            caption="processing...",
+            caption_style="green",
+            title_style="green",
+            header_style="green",
+            footer_style="green",
+            show_footer=True,
+            box=box.SQUARE_DOUBLE_HEAD,
+        )
         table.add_column("Sections", style="green", footer="Total", no_wrap=True)
         table.add_column("Lessons", style="green", footer="0", justify="center")
 
@@ -186,7 +195,15 @@ class AsyncPlatzi:
                     subs = unit.video.subtitles_url
                     if subs:
                         for sub in subs:
-                            lang = "_es" if "ES" in sub else "_en" if "EN" in sub else "_pt" if "PT" in sub else ""
+                            lang = (
+                                "_es"
+                                if "ES" in sub
+                                else "_en"
+                                if "EN" in sub
+                                else "_pt"
+                                if "PT" in sub
+                                else ""
+                            )
 
                             dst = CHAP_DIR / f"{file_name}{lang}.vtt"
                             Logger.print(f"[{dst.name}]", "[DOWNLOADING-SUBS]")
@@ -208,7 +225,7 @@ class AsyncPlatzi:
                         if readings:
                             dst = CHAP_DIR / f"{jdx:02}-Lecturas recomendadas.txt"
                             Logger.print(f"[{dst.name}]", "[SAVING-READINGS]")
-                            with open(dst, 'w', encoding='utf-8') as f:
+                            with open(dst, "w", encoding="utf-8") as f:
                                 for lecture in readings:
                                     f.write(lecture + "\n")
 
@@ -217,7 +234,7 @@ class AsyncPlatzi:
                         if summary:
                             dst = CHAP_DIR / f"{jdx:02}-Resumen.html"
                             Logger.print(f"[{dst.name}]", "[SAVING-SUMMARY]")
-                            with open(dst, 'w', encoding='utf-8') as f:
+                            with open(dst, "w", encoding="utf-8") as f:
                                 f.write(summary)
 
                 # download lecture
