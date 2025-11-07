@@ -135,6 +135,12 @@ platzi clear-cache
 > [!TIP]
 > Luego de actualizar el script u obtener algún error inesperado se recomienda limpiar la caché antes de volver a intentar descargar el curso. Puedes hacerlo ejecutando el comando `platzi clear-cache`.
 
+## Contribuidores
+
+<a href="https://github.com/ivansaul/vaporz/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ivansaul/platzi-downloader" />
+</a>
+
 ## **Aviso de Uso**
 
 Este proyecto se realiza con fines exclusivamente educativos y de aprendizaje. El código proporcionado se ofrece "tal cual", sin ninguna garantía de su funcionamiento o idoneidad para ningún propósito específico.
