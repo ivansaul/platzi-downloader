@@ -1,5 +1,46 @@
 # CHANGELOG
 
+## v0.7.2 (2025-11-07)
+
+### Chore
+
+* chore(deps): update project dependencies
+
+- typer: ^0.13.0 → ^0.19.2
+- aiofiles: ^24.1.0 → ^25.1.0
+- ruff: ^0.7.4 → ^0.14.1
+- types-aiofiles: ^24.1.0.20250326 → ^25.1.0.20251011 ([`402d758`](https://github.com/ivansaul/platzi-downloader/commit/402d758b8c50735928b20ffdb459b7cfcaf9ebe3))
+
+* chore(mypy): align default quality value type with annotation
+
+- Update default from bool to str (&#34;720&#34;) to satisfy mypy type checking.
+- Add TODO to replace str with a custom Quality enum in the future. ([`7e8ad1c`](https://github.com/ivansaul/platzi-downloader/commit/7e8ad1cc8b8740679297b09016c3fec34d4887ec))
+
+### Fix
+
+* fix(rnet-client): send headers correctly in GET request ([`218b0ec`](https://github.com/ivansaul/platzi-downloader/commit/218b0ec3cc371cab969dac4bf94cc7a8c548aed9))
+
+### Style
+
+* style(ruff): format codebase with ruff
+
+Apply Ruff formatting after merging some unformatted PRs. No functional
+changes. ([`ced5586`](https://github.com/ivansaul/platzi-downloader/commit/ced5586a77cecbd8ffe910e9b5c0bb9831f37526))
+
+### Unknown
+
+* Merge pull request #39 from alpha-drm/master
+
+fix(rnet-client): send headers correctly in GET request ([`8f2da59`](https://github.com/ivansaul/platzi-downloader/commit/8f2da59530379c5a279a6fe8b75abafbf296a734))
+
+* Merge pull request #37 from ivansaul/chore/deps-update
+
+chore(deps): update project dependencies ([`99357fc`](https://github.com/ivansaul/platzi-downloader/commit/99357fc8697a59404c8cd1191b95f64e5f2c316d))
+
+* Merge pull request #36 from ivansaul/chore/ruff-and-mypy
+
+chore: apply Ruff formatting and align mypy type annotations ([`d34d607`](https://github.com/ivansaul/platzi-downloader/commit/d34d607f3f3275f6ba05ea9e4c8f0264a28b3d68))
+
 ## v0.7.1 (2025-10-16)
 
 ### Fix
