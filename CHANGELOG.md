@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## v0.7.3 (2025-11-08)
+
+### Chore
+
+* chore: update headers to improve compatibility ([`2faf8b8`](https://github.com/ivansaul/platzi-downloader/commit/2faf8b8edbb24d18f0eb46a2aa6d40055f12535d))
+
+### Documentation
+
+* docs(readme): update repo banner image ([`1cd1644`](https://github.com/ivansaul/platzi-downloader/commit/1cd1644dd6bd819cd1b8e8de1c07a2a89ff5d77b))
+
+* docs(readme): add contributors section ([`f4d96a9`](https://github.com/ivansaul/platzi-downloader/commit/f4d96a93e77d78293e4da53d9cc8b76eea2049b2))
+
+### Fix
+
+* fix(http): update request headers to prevent 403 error ([`a64bb22`](https://github.com/ivansaul/platzi-downloader/commit/a64bb22c2f7e78b31827f1e8da2fdd950c1ace00))
+
+### Unknown
+
+* Merge pull request #42 from alpha-drm/master ([`ad5729c`](https://github.com/ivansaul/platzi-downloader/commit/ad5729c327fe7045ed0358ba1cf941685e347c0e))
+
+* Merge pull request #41 from ivansaul/docs/update-banner
+
+docs(readme): update repo banner image ([`1439411`](https://github.com/ivansaul/platzi-downloader/commit/143941114d000daf55d2743b1f95c2c7befca6eb))
+
+* Merge pull request #40 from ivansaul/docs/add-contributors
+
+docs(readme): add contributors section ([`e87d878`](https://github.com/ivansaul/platzi-downloader/commit/e87d878d2f316bbaf8332ff4ab964575b3094861))
+
 ## v0.7.2 (2025-11-07)
 
 ### Chore

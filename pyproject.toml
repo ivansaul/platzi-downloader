@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "platzi"
-version = "0.7.2"
+version = "0.7.3"
 description = "Download your courses from platzi"
 authors = ["ivansaul <ivansaul@no-reply.com>"]
 license = "MIT"
