@@ -13,14 +13,18 @@ LOGIN_DETAILS_URL = "https://api.platzi.com/api/v1/components/headerv2/user/"
 PLATZI_URL = "https://platzi.com"
 REFERER = "https://platzi.com/"
 
-# FIREFOX
 USER_AGENT = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0"
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/121.0.0.0 Safari/537.36"
 )
 
 HEADERS = {
     "User-Agent": USER_AGENT,
     "Referer": REFERER,
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
+    "Connection": "keep-alive",
 }
 
 

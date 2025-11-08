@@ -11,7 +11,7 @@ import aiofiles
 import rnet
 from tqdm.asyncio import tqdm
 
-from .constants import REFERER
+from .constants import HEADERS
 from .helpers import retry
 
 
@@ -56,7 +56,7 @@ async def _ts_dl(url: str, path: Path, **kwargs):
     path.parent.mkdir(parents=True, exist_ok=True)
 
     client = rnet.Client(impersonate=rnet.Impersonate.Firefox139)
-    response: rnet.Response = await client.get(url, headers={"Referer": REFERER})
+    response: rnet.Response = await client.get(url, headers=HEADERS)
 
     try:
         if not response.ok:
@@ -123,7 +123,7 @@ async def _m3u8_dl(
     tmp_dir.mkdir(parents=True, exist_ok=True)
 
     client = rnet.Client(impersonate=rnet.Impersonate.Firefox139)
-    response: rnet.Response = await client.get(url, headers={"Referer": REFERER})
+    response: rnet.Response = await client.get(url, headers=HEADERS)
 
     try:
         if not response.ok:
@@ -211,7 +211,7 @@ async def m3u8_dl(
         return
 
     client = rnet.Client(impersonate=rnet.Impersonate.Firefox139)
-    response: rnet.Response = await client.get(url, headers={"Referer": REFERER})
+    response: rnet.Response = await client.get(url, headers=HEADERS)
 
     try:
         if not response.ok:
