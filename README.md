@@ -1,6 +1,6 @@
 <!-- markdownlint-disable MD033 MD036 MD041 MD045 MD046 -->
 
-![Repo Banner](https://i.imgur.com/I6zFXds.png)
+![Repo Banner](https://i.imgur.com/aJVikYa.png)
 
 <div align="center">
 
