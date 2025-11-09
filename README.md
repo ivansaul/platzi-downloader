@@ -10,11 +10,11 @@
 
 Es una herramienta de línea de comandos para descargar cursos directamente desde la terminal. Utiliza  ***`Python`*** y ***`Playwright`*** para automatizar el proceso de descarga y proporciona una interfaz de usuario amigable.
 
-![GitHub repo size](https://img.shields.io/github/repo-size/ivansaul/platzi-downloader)
+![GitHub repo size](https://img.shields.io/github/repo-size/ivansaul/platzi-downloader?style=social)
 ![GitHub stars](https://img.shields.io/github/stars/ivansaul/platzi-downloader)
 ![GitHub forks](https://img.shields.io/github/forks/ivansaul/platzi-downloader)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Discord](https://img.shields.io/badge/-Discord-424549?style=social&logo=discord)](https://discord.gg/tDvybtJ7y9)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=social)](https://opensource.org/licenses/MIT)
+[![Discord](https://img.shields.io/discord/1244611850700849183?style=social&logo=discord)](https://discord.gg/tDvybtJ7y9)
 
 </div>
 
