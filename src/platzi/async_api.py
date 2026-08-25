@@ -195,13 +195,14 @@ class AsyncPlatzi:
                     subs = unit.video.subtitles_url
                     if subs:
                         for sub in subs:
+                            sub_lower = sub.lower()
                             lang = (
                                 "_es"
-                                if "ES" in sub
+                                if "spanish" in sub_lower or "-es." in sub_lower
                                 else "_en"
-                                if "EN" in sub
+                                if "english" in sub_lower or "-en." in sub_lower
                                 else "_pt"
-                                if "PT" in sub
+                                if "portuguese" in sub_lower or "-pt." in sub_lower
                                 else ""
                             )
 

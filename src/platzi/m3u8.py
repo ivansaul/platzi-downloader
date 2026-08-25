@@ -2,10 +2,10 @@ import asyncio
 import functools
 import hashlib
 import os
-import re
 import shutil
 import subprocess
 from pathlib import Path
+from urllib.parse import urljoin
 
 import aiofiles
 import rnet
@@ -30,18 +30,27 @@ def _hash_id(input: str) -> str:
     return hash_object.hexdigest()
 
 
-def _extract_streaming_urls(content: str) -> list[str] | None:
-    BASE_URL = "https://mediastream.platzi.com"
-    pattern = r"(https?://[^\s]+|(?::)?///?[^\s]+)"
-    matches = re.findall(pattern, content)
+def _playlist_uri_lines(content: str, base_url: str) -> list[str]:
+    return [
+        urljoin(base_url, line.strip().strip('"'))
+        for line in content.splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
 
-    urls = []  # save video resolutions
-    for match in matches:
-        if match.startswith("http"):
-            urls.append(match)
-        else:
-            full_url = BASE_URL.rstrip("/") + "/" + match.lstrip(":/")
-            urls.append(full_url)
+
+def _extract_variant_urls(content: str, base_url: str) -> list[str] | None:
+    """Return only video variants associated with EXT-X-STREAM-INF tags."""
+    lines = [line.strip() for line in content.splitlines() if line.strip()]
+    urls: list[str] = []
+    expect_variant = False
+
+    for line in lines:
+        if line.startswith("#EXT-X-STREAM-INF:"):
+            expect_variant = True
+            continue
+        if expect_variant and not line.startswith("#"):
+            urls.append(urljoin(base_url, line.strip('"')))
+            expect_variant = False
 
     return urls or None
 
@@ -55,7 +64,7 @@ async def _ts_dl(url: str, path: Path, **kwargs):
     path.unlink(missing_ok=True)
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    client = rnet.Client(impersonate=rnet.Impersonate.Firefox139)
+    client = rnet.Client(impersonate=rnet.Impersonate.Chrome131)
     response: rnet.Response = await client.get(url, headers=HEADERS)
 
     try:
@@ -122,14 +131,14 @@ async def _m3u8_dl(
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp_dir.mkdir(parents=True, exist_ok=True)
 
-    client = rnet.Client(impersonate=rnet.Impersonate.Firefox139)
+    client = rnet.Client(impersonate=rnet.Impersonate.Chrome131)
     response: rnet.Response = await client.get(url, headers=HEADERS)
 
     try:
         if not response.ok:
             raise Exception("Error downloading m3u8")
 
-        ts_urls = _extract_streaming_urls(await response.text())
+        ts_urls = _playlist_uri_lines(await response.text(), url)
 
         if not ts_urls:
             raise Exception("No ts urls found")
@@ -210,23 +219,22 @@ async def m3u8_dl(
     if not overwrite and path.exists():
         return
 
-    client = rnet.Client(impersonate=rnet.Impersonate.Firefox139)
+    client = rnet.Client(impersonate=rnet.Impersonate.Chrome131)
     response: rnet.Response = await client.get(url, headers=HEADERS)
 
     try:
         if not response.ok:
             raise Exception("Error downloading m3u8")
 
-        m3u8_urls = _extract_streaming_urls(
-            await response.text()
-        )  # The .m3u8 link contains the video resolutions
+        m3u8_urls = _extract_variant_urls(
+            await response.text(), url
+        )  # The master playlist contains the video resolutions
 
         if not m3u8_urls:
             raise Exception("No m3u8 urls found")
 
-        await _m3u8_dl(
-            m3u8_urls[int(quality)], path, **kwargs
-        )  # Here goes the video resolution [0]=1280; [1]=1920
+        selected_index = min(int(quality), len(m3u8_urls) - 1)
+        await _m3u8_dl(m3u8_urls[selected_index], path, **kwargs)
 
     except Exception:
         raise
