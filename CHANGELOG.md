@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## v0.7.4 (2026-08-28)
+
+### Chore
+
+* chore: add issue templates for bug reports and feature requests ([`864c5f4`](https://github.com/ivansaul/platzi-downloader/commit/864c5f40d843dd2532e9fd4e76c68a8b165e011d))
+
+### Documentation
+
+* docs(readme): update repo shield badges ([`5774ad5`](https://github.com/ivansaul/platzi-downloader/commit/5774ad5c4ab166766300204700ae02a84fbbac9e))
+
+### Fix
+
+* fix: support current course layout and HLS playlists ([`518934f`](https://github.com/ivansaul/platzi-downloader/commit/518934faecf0775aeda948341fce7a4770a1ecd6))
+
+### Unknown
+
+* Merge pull request #52 from Romario2003A/codex/fix-current-layout-and-hls
+
+fix: support current course layout and HLS playlists ([`bfffff1`](https://github.com/ivansaul/platzi-downloader/commit/bfffff12b493a5c67a614f3fd5bb56776ab64be1))
+
+* Merge pull request #48 from ivansaul/chore/add-github-issue-templates
+
+chore: add issue templates for bug reports and feature requests ([`624d30f`](https://github.com/ivansaul/platzi-downloader/commit/624d30ff1e70e1482ce8c9bc64fc8c3cf21013ec))
+
+* Merge pull request #44 from ivansaul/docs/update-shield-badges
+
+docs(readme): update repo shield badges ([`758ce39`](https://github.com/ivansaul/platzi-downloader/commit/758ce397f500875ef47d9431f2f0c975e072d71c))
+
 ## v0.7.3 (2025-11-08)
 
 ### Chore
