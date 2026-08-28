@@ -85,7 +85,7 @@ def clear_cache():
         platzi clear-cache
     """
     Cache.clear()
-    print("[green]Cache cleared successfully 🗑️[/green]")
+    print("[green]Cache cleared successfully[/green]")
 
 
 async def _login():

@@ -1,4 +1,5 @@
 import asyncio
+from urllib.parse import urljoin
 
 from playwright.async_api import BrowserContext, Page
 
@@ -10,7 +11,7 @@ from .utils import download_styles, get_m3u8_url, get_subtitles_url, slugify
 
 @Cache.cache_async
 async def get_course_title(page: Page) -> str:
-    SELECTOR = "h1[class*='CourseHeader']"
+    SELECTOR = "h1[class*='CourseHeader'], main h1, h1"
     EXCEPTION = Exception("No course title found")
     try:
         title = await page.locator(SELECTOR).first.text_content()
@@ -32,7 +33,11 @@ async def get_draft_chapters(page: Page) -> list[Chapter]:
 
         chapters: list[Chapter] = []
         for i in range(await locator.count()):
-            chapter_name = await locator.nth(i).locator("h2").first.text_content()
+            chapter_name = (
+                await locator.nth(i)
+                .locator("[data-qa-syllabus-class-title], h3, h2")
+                .first.text_content()
+            )
 
             if not chapter_name:
                 raise EXCEPTION
@@ -44,7 +49,7 @@ async def get_draft_chapters(page: Page) -> list[Chapter]:
                 ITEM_LOCATOR = block_list_locator.nth(j)
 
                 unit_url = await ITEM_LOCATOR.get_attribute("href")
-                unit_title = await ITEM_LOCATOR.locator("h3").first.text_content()
+                unit_title = await ITEM_LOCATOR.locator("h4, h3").first.text_content()
 
                 if not unit_url or not unit_title:
                     raise EXCEPTION
@@ -53,7 +58,7 @@ async def get_draft_chapters(page: Page) -> list[Chapter]:
                     Unit(
                         type=TypeUnit.VIDEO,
                         title=unit_title,
-                        url=PLATZI_URL + unit_url,
+                        url=urljoin(PLATZI_URL, unit_url),
                         slug=slugify(unit_title),
                     )
                 )
@@ -73,10 +78,12 @@ async def get_draft_chapters(page: Page) -> list[Chapter]:
     return chapters
 
 
-@Cache.cache_async
 async def get_unit(context: BrowserContext, url: str) -> Unit:
     TYPE_SELECTOR = ".VideoPlayer"
-    TITLE_SELECTOR = "h1[class*='MaterialHeading']"
+    TITLE_SELECTOR = (
+        "section[class*='MaterialHeading'] h1, "
+        "h1[class*='MaterialCourseInfo'], main h1, h1"
+    )
     EXCEPTION = Exception("Could not collect unit data")
 
     # --- NEW CONSTANTS ----
@@ -100,9 +107,19 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
     page = None
     try:
         page = await context.new_page()
+        m3u8_urls: list[str] = []
+        subtitle_urls: list[str] = []
+
+        def capture_media_request(request) -> None:
+            if ".m3u8" in request.url and request.url not in m3u8_urls:
+                m3u8_urls.append(request.url)
+            elif ".vtt" in request.url and request.url not in subtitle_urls:
+                subtitle_urls.append(request.url)
+
+        page.on("request", capture_media_request)
         await page.goto(url)
 
-        await asyncio.sleep(5)  # delay to avoid rate limiting
+        await asyncio.sleep(2)  # brief delay to avoid rate limiting
 
         title = await page.locator(TITLE_SELECTOR).first.text_content()
 
@@ -118,11 +135,19 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
             )
 
         # It's a video unit
+        deadline = asyncio.get_running_loop().time() + 30
+        while not m3u8_urls and asyncio.get_running_loop().time() < deadline:
+            await asyncio.sleep(0.25)
+
         content = await page.content()
+        video_url = m3u8_urls[0] if m3u8_urls else get_m3u8_url(content)
+        subtitles = list(
+            dict.fromkeys((get_subtitles_url(content) or []) + subtitle_urls)
+        )
         unit_type = TypeUnit.VIDEO
         video = Video(
-            url=get_m3u8_url(content),
-            subtitles_url=get_subtitles_url(content),
+            url=video_url,
+            subtitles_url=subtitles or None,
         )
 
         # --- Get resources and summary ---

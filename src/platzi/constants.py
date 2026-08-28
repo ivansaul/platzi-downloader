@@ -1,9 +1,12 @@
+import os
 from pathlib import Path
 
 import platformdirs
 
 APP_NAME = "Platzi"
-SESSION_DIR = Path(platformdirs.user_data_dir(APP_NAME))
+SESSION_DIR = Path(
+    os.environ.get("PLATZI_DATA_DIR", platformdirs.user_data_dir(APP_NAME))
+)
 SESSION_FILE = SESSION_DIR / "state.json"  # Cookies are stored here
 
 LOGIN_URL = "https://platzi.com/login"
@@ -15,13 +18,13 @@ REFERER = "https://platzi.com/"
 
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/121.0.0.0 Safari/537.36"
+    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 )
 
 HEADERS = {
     "User-Agent": USER_AGENT,
     "Referer": REFERER,
+    "Origin": PLATZI_URL,
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
     "Connection": "keep-alive",
