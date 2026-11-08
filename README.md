@@ -37,6 +37,11 @@ playwright install chromium
 > [!IMPORTANT]
 > El script utiliza ***`ffmpeg`***, como un subproceso, así que asegúrate de tener instalado y actualizado.
 
+Para descargar con `-q 1080`, también necesitas `ffprobe`, incluido habitualmente
+con FFmpeg, en el PATH. El programa prioriza la calidad solicitada y avisa si usa
+una inferior disponible. Al pedir 1080p, verifica la resolución del MP4 antes de
+guardarlo.
+
 <details>
 
 <summary>Tips & Tricks</summary>
@@ -91,7 +96,7 @@ Para descargar un curso de Platzi, usa el comando download seguido de la URL del
 platzi download URL [OPTIONS]
 
 OPTIONS:
-  --quality / -q  Specifies the video quality (default: max). Options: [1080|720].
+  --quality / -q  Requests a video height in pixels (default: 720). Use 1080 for Full HD.
   --overwrite / -w  Overwrite files if exist.
 ```
 

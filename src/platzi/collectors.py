@@ -5,6 +5,7 @@ from playwright.async_api import BrowserContext, Page
 
 from .cache import Cache
 from .constants import PLATZI_URL
+from .helpers import retry
 from .models import Chapter, Resource, TypeUnit, Unit, Video
 from .utils import download_styles, get_m3u8_url, get_subtitles_url, slugify
 
@@ -78,8 +79,10 @@ async def get_draft_chapters(page: Page) -> list[Chapter]:
     return chapters
 
 
+@retry(attempts=3, delay=2)
 async def get_unit(context: BrowserContext, url: str) -> Unit:
     TYPE_SELECTOR = ".VideoPlayer"
+    LECTURE_SELECTOR = "div[class*='_Lecture_'], div[class*='Lecture_Lecture']"
     TITLE_SELECTOR = (
         "section[class*='MaterialHeading'] h1, "
         "h1[class*='MaterialCourseInfo'], main h1, h1"
@@ -117,7 +120,7 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
                 subtitle_urls.append(request.url)
 
         page.on("request", capture_media_request)
-        await page.goto(url)
+        await page.goto(url, wait_until="domcontentloaded")
 
         await asyncio.sleep(2)  # brief delay to avoid rate limiting
 
@@ -126,7 +129,13 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
         if not title:
             raise EXCEPTION
 
-        if not await page.locator(TYPE_SELECTOR).is_visible():
+        # Wait for positive evidence of a video or a reading after hydration.
+        await page.locator(
+            f"{TYPE_SELECTOR}:visible, "
+            "div[class*='_Lecture_']:visible, div[class*='Lecture_Lecture']:visible"
+        ).first.wait_for(state="visible", timeout=45000)
+
+        if await page.locator(LECTURE_SELECTOR).first.is_visible():
             return Unit(
                 url=url,
                 title=title,
@@ -141,6 +150,10 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
 
         content = await page.content()
         video_url = m3u8_urls[0] if m3u8_urls else get_m3u8_url(content)
+        if not video_url:
+            raise RuntimeError(
+                "El reproductor apareció, pero no entregó una lista de video en 30 segundos."
+            )
         subtitles = list(
             dict.fromkeys((get_subtitles_url(content) or []) + subtitle_urls)
         )
@@ -190,14 +203,16 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
         summary = page.locator(SUMMARY_CONTENT_SELECTOR)
         if await summary.count() > 0:
             all_css_styles: list[str] = []
+            class_container = ""
+            class_main = ""
 
             layout_container = await page.query_selector(LAYOUT_CONTAINER)
             if layout_container:
-                class_container = await layout_container.get_attribute("class")
+                class_container = await layout_container.get_attribute("class") or ""
 
             main_layout = await page.query_selector(MAIN_LAYOUT)
             if main_layout:
-                class_main = await main_layout.get_attribute("class")
+                class_main = await main_layout.get_attribute("class") or ""
 
             # Get the HTML structure of the summary
             summary_section = await summary.evaluate("el => el.outerHTML")
@@ -253,7 +268,9 @@ async def get_unit(context: BrowserContext, url: str) -> Unit:
         )
 
     except Exception as e:
-        raise EXCEPTION from e
+        raise RuntimeError(
+            f"Could not collect unit data ({url}): {type(e).__name__}: {e}"
+        ) from e
 
     finally:
         if page:
