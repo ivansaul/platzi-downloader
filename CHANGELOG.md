@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v0.7.5 (2026-11-23)
+
+### Fix
+
+* fix: select video quality by resolution and retry lesson collection ([`4e2c17d`](https://github.com/ivansaul/platzi-downloader/commit/4e2c17d422541f1e6fa547a125728cf9d0f28681))
+
+### Unknown
+
+* Merge pull request #54 from romario-anchaise/fix/video-quality-and-course-retries
+
+fix: corregir calidad de video y reintentar la lectura de clases ([`e9cfe08`](https://github.com/ivansaul/platzi-downloader/commit/e9cfe086e2ab173f9b9c87f2dbfa47d66944d861))
+
 ## v0.7.4 (2026-08-28)
 
 ### Chore
