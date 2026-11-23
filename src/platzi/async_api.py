@@ -174,6 +174,7 @@ class AsyncPlatzi:
                 table.add_row(f"{idx}-{section.name}", str(len(section.units)))
                 table.columns[1].footer = str(total_units)  # Update footer dynamically
 
+        failed_units: list[str] = []
         for idx, draft_chapter in enumerate(draft_chapters, 1):
             Logger.info(f"Creating directory: {draft_chapter.name}")
 
@@ -182,7 +183,15 @@ class AsyncPlatzi:
 
             # iterate over units
             for jdx, draft_unit in enumerate(draft_chapter.units, 1):
-                unit = await get_unit(self.context, draft_unit.url)
+                try:
+                    unit = await get_unit(self.context, draft_unit.url)
+                except Exception as error:
+                    failed_units.append(draft_unit.url)
+                    Logger.error(f"{draft_unit.title}: {error}")
+                    Logger.warning(
+                        "La clase sigue fallando tras los reintentos. Se continúa con la siguiente."
+                    )
+                    continue
                 file_name = f"{jdx:02}-{clean_string(unit.title)}"
 
                 # download video
@@ -251,6 +260,14 @@ class AsyncPlatzi:
                     await self.save_page(unit.url, path=dst)
 
             print("=" * 100)
+
+        if failed_units:
+            Logger.warning(
+                f"Quedaron {len(failed_units)} clases pendientes por errores al leer sus datos. "
+                "Vuelve a ejecutar el curso para reintentarlas."
+            )
+            for failed_url in failed_units:
+                Logger.warning(failed_url)
 
     @try_except_request
     async def save_page(
